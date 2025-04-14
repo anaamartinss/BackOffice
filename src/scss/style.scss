@@ -135,3 +135,31 @@ body {
 .btn-outline-success, .btn-outline-danger {
   border-radius: 5px;
 }
+
+
+/* Barra lateral */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+nav .nav-link {
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+nav .nav-link:hover {
+  background-color: #198754; /* Cor verde */
+  color: white;
+  text-decoration: none;
+}
+
+nav .nav-link.text-success {
+  font-weight: bold;
+  background-color: #198754; /* Cor verde */
+  color: white;
+}
