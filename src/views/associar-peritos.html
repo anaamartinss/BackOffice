@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Associar Perito</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+
+    .header {
+      background-color: #b2ce99;
+      padding: 20px;
+    }
+
+    .header h2 {
+      margin: 0 0 15px 0;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    thead {
+      background-color: #009973;
+      color: white;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .perfil {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .perfil img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .btn-associar {
+      background-color: #009973;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-associar:hover {
+      background-color: #007a5e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Associar Perito</h2>
+    <div class="filters">
+      <label>Tipo de Ocorrência:
+        <select id="filtroTipo">
+          <option value="">Escolher...</option>
+          <option value="Eletricidade">Eletricidade</option>
+          <option value="Poluição atmosférica">Poluição atmosférica</option>
+          <option value="Inundações">Inundações</option>
+          <option value="Estruturas debilitadas">Estruturas debilitadas</option>
+          <option value="Desperdício de água">Desperdício de água</option>
+          <option value="Rios poluídos">Rios poluídos</option>
+          <option value="Incêndios">Incêndios</option>
+        </select>
+      </label>
+
+      <label>Nome:
+        <input type="text" id="filtroNome" placeholder="Nome do perito">
+      </label>
+
+      <label>Localidade:
+        <input type="text" id="filtroLocalidade" placeholder="Localidade">
+      </label>
+    </div>
+  </div>
+
+  <table id="tabelaPeritos">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Disponibilidade</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody id="corpoTabela">
+      <!-- Conteúdo gerado dinamicamente -->
+    </tbody>
+  </table>
+
+  <script>
+    const peritos = [
+      {
+        nome: "Carla Sanches",
+        especialidade: "Eletricidade",
+        localidade: "Portalegre",
+        disponibilidade: "Disponível",
+        foto: "https://randomuser.me/api/portraits/women/44.jpg"
+      },
+      {
+        nome: "Rui Pinheiro",
+        especialidade: "Poluição atmosférica",
+        localidade: "Faro",
+        disponibilidade: "Disponível",
+        foto: "https://randomuser.me/api/portraits/men/45.jpg"
+      },
+      {
+        nome: "Diego Kong",
+        especialidade: "Inundações",
+        localidade: "Bragança",
+        disponibilidade: "Indisponível",
+        foto: "https://randomuser.me/api/portraits/men/46.jpg"
+      },
+      {
+        nome: "Mariana Sousa",
+        especialidade: "Estruturas debilitadas",
+        localidade: "Beja",
+        disponibilidade: "Disponível",
+        foto: "https://randomuser.me/api/portraits/women/47.jpg"
+      },
+      {
+        nome: "Filipa Oliveira",
+        especialidade: "Desperdício de água",
+        localidade: "Lisboa",
+        disponibilidade: "Disponível",
+        foto: "https://randomuser.me/api/portraits/women/48.jpg"
+      },
+      {
+        nome: "João Martins",
+        especialidade: "Rios poluídos",
+        localidade: "Coimbra",
+        disponibilidade: "Disponível",
+        foto: "https://randomuser.me/api/portraits/men/49.jpg"
+      },
+      {
+        nome: "Luís Carvalho",
+        especialidade: "Incêndios",
+        localidade: "Porto",
+        disponibilidade: "Indisponível",
+        foto: "https://randomuser.me/api/portraits/men/50.jpg"
+      }
+    ];
+
+    const filtroTipo = document.getElementById('filtroTipo');
+    const filtroNome = document.getElementById('filtroNome');
+    const filtroLocalidade = document.getElementById('filtroLocalidade'); // Reservado, sem dados por agora
+    const corpoTabela = document.getElementById('corpoTabela');
+
+    function renderTabela() {
+        const nomeFiltro = filtroNome.value.toLowerCase();
+        const tipoFiltro = filtroTipo.value;
+        const localidadeFiltro = filtroLocalidade.value.toLowerCase();
+
+        corpoTabela.innerHTML = "";
+
+        peritos.forEach(perito => {
+            const nomeOk = perito.nome.toLowerCase().includes(nomeFiltro);
+            const tipoOk = tipoFiltro === "" || perito.especialidade === tipoFiltro;
+            const localidadeOk = perito.localidade.toLowerCase().includes(localidadeFiltro);
+
+            if (nomeOk && tipoOk && localidadeOk) {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                <td>
+                <div class="perfil">
+                    <img src="${perito.foto}" alt="${perito.nome}">
+                    <div>
+                        <strong>${perito.nome}</strong><br>
+                        <span>Especialidade: ${perito.especialidade}</span><br>
+                        <span>Localidade: ${perito.localidade}</span>
+                    </div>
+                </div>
+                </td>
+                <td>${perito.disponibilidade}</td>
+                <td><button class="btn-associar" onclick="associar('${perito.nome}', '${perito.disponibilidade}')">Associar</button></td>
+                `;
+
+            corpoTabela.appendChild(tr);
+            }
+        });
+    }
+
+    function associar(nome, disponibilidade) {
+    if (disponibilidade === "Disponível") {
+        alert(`Perito ${nome} associado com sucesso!`);
+    } else {
+        alert(`Não foi possível associar o perito ${nome} (Indisponível).`);
+    }
+    }
+
+    filtroTipo.addEventListener('input', renderTabela);
+    filtroNome.addEventListener('input', renderTabela);
+    filtroLocalidade.addEventListener('input', renderTabela);
+
+    renderTabela();
+  </script>
+
+</body>
+</html>
