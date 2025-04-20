@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novas Ocorrências</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h2 class="text-success">Novas Ocorrências</h2>
+        <hr class="text-success" style="height: 3px; width: 50px; margin-top: 0;">
+        <table class="table">
+          <thead class="table-success">
+            <tr>
+              <th>Localidade</th>
+              <th>Tipo</th>
+              <th>Data</th>
+              <th>Estado</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Algarve</td>
+              <td>Eletricidade</td>
+              <td>Mar 2, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Matosinhos</td>
+              <td>Poluição atmosférica</td>
+              <td>Mar 28, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Guimarães</td>
+              <td>Inundações</td>
+              <td>Mar 18, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Guarda</td>
+              <td>Estruturas debilitadas</td>
+              <td>Mar 29, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Bragança</td>
+              <td>Desperdício de água</td>
+              <td>Abril 2, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Valongo</td>
+              <td>Rios poluídos</td>
+              <td>Mar 10, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Felgueiras</td>
+              <td>Incêndios</td>
+              <td>Mar 20, 2025</td>
+              <td>Em aberto</td>
+              <td class="text-center">
+                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
+                <button class="btn btn-success btn-custom">Registar</button>
+                <button class="btn btn-success btn-custom">Ver detalhes</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
