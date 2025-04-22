@@ -7,6 +7,12 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
+  <style>
+    .btn-acao {
+      min-width: 100px;
+      margin: 2px;
+    }
+  </style>
 </head>
 
 <body>
@@ -52,16 +58,16 @@
             </tr>
           </thead>
 
-          <tbody>
+          <tbody id="novas-ocorrencias-table">
             <tr>
               <td>Algarve</td>
               <td>Eletricidade</td>
               <td>Mar 2, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -70,9 +76,9 @@
               <td>Mar 28, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -81,9 +87,9 @@
               <td>Mar 18, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -92,9 +98,9 @@
               <td>Mar 29, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -103,9 +109,9 @@
               <td>Abril 2, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -114,9 +120,9 @@
               <td>Mar 10, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
             <tr>
@@ -125,12 +131,24 @@
               <td>Mar 20, 2025</td>
               <td>Em aberto</td>
               <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-custom">Associar</a>
-                <button class="btn btn-success btn-custom">Registar</button>
-                <button class="btn btn-success btn-custom">Ver detalhes</button>
+                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
               </td>
             </tr>
           </tbody>
+
+          <tfoot>
+            <tr>
+              <td><input type="text" id="nova-localidade" class="form-control form-control-sm" placeholder="Localidade"></td>
+              <td><input type="text" id="novo-tipo" class="form-control form-control-sm" placeholder="Tipo"></td>
+              <td><input type="date" id="nova-data" class="form-control form-control-sm"></td>
+              <td><input type="text" id="novo-estado" class="form-control form-control-sm" placeholder="Estado"></td>
+              <td>
+                <button class="btn btn-primary btn-sm btn-acao" onclick="adicionarLinha()">Adicionar</button>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -138,5 +156,52 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function adicionarLinha() {
+      const localidade = document.getElementById('nova-localidade').value;
+      const tipo = document.getElementById('novo-tipo').value;
+      const data = document.getElementById('nova-data').value;
+      const estado = document.getElementById('novo-estado').value;
+
+      if (localidade && tipo && data && estado) {
+        const tabela = document.getElementById('novas-ocorrencias-table');
+        const novaLinha = document.createElement('tr');
+
+        novaLinha.innerHTML = `
+          <td>${localidade}</td>
+          <td>${tipo}</td>
+          <td>${new Date(data).toLocaleDateString('pt-PT', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+          <td>${estado}</td>
+          <td class="text-center">
+            <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
+            <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
+            <button class="btn btn-success btn-acao">Ver detalhes</button>
+          </td>
+        `;
+
+        tabela.appendChild(novaLinha);
+
+        // Limpar os campos
+        document.getElementById('nova-localidade').value = '';
+        document.getElementById('novo-tipo').value = '';
+        document.getElementById('nova-data').value = '';
+        document.getElementById('novo-estado').value = '';
+      } else {
+        alert('Por favor, preencha todos os campos antes de adicionar.');
+      }
+    }
+
+    function removerLinha(botao) {
+      const linha = botao.closest('tr');
+      linha.remove();
+    }
+
+    function verDetalhes(isNova) {
+      const url = `ver-detalhes.html?nova=${isNova ? '1' : '0'}`;
+      window.location.href = url;
+    }
+
+  </script>
 </body>
 </html>
