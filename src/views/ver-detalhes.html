@@ -2,111 +2,50 @@
 <html lang="pt">
 <head>
   <link rel="icon" href="/public/favicon.png" type="image/png">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Detalhes da Ocorrência</title>
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      display: flex;
-      margin: 0;
-      background-color: #f4f6fa;
-    }
-
-    .sidebar {
-      width: 250px;
-      min-height: 100vh;
-      background-color: #343a40;
-      color: white;
-      padding: 20px;
-    }
-
-    .sidebar a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .sidebar a.active {
-      color: #28a745;
-      font-weight: bold;
-    }
-
-    .content {
-      flex-grow: 1;
-      padding: 40px;
-    }
-
-    .form-section {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .form-section h2 {
-      color: #1e7e34;
-      font-weight: bold;
-    }
-
-    .form-label {
-      color: #dc3545;
-      font-weight: bold;
-    }
-
-    .btn-green {
-      background-color: #1e7e34;
-      color: white;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    .attachments img {
-      width: 100%;
-      height: auto;
-      border-radius: 5px;
-    }
-
-    .attachments .col {
-      padding: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <h4>EyesEverywhere</h4>
-    <hr>
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <a class="nav-link" href="dashboard.html">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="listar-peritos.html">Listar Peritos</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="registar-perito.html">Registar Perito</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="novas-ocorrencias.html">Novas Ocorrências</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="Listar-auditorias.html">Listar Auditorias</a>
-      </li>
-    </ul>
-    <hr>
-    <p>EyesEverywhere</p>
-  </nav>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
 
-  <!-- Main Content -->
-  <div class="content">
-    <div class="form-section">
-      <h2 id="titulo-ocorrencia">Detalhes da Ocorrência</h2>
+    
+    <!-- Main Content -->
+  <div class="d-flex flex-grow-1 justify-content-center align-items-center p-4">
+    <div class="bg-white p-4 rounded shadow-sm w-100" style="max-width: 800px;">
+      <h2 id="titulo-ocorrencia" class="text-success fw-bold text-center">Detalhes da Ocorrência</h2>
       <hr>
       <div class="mb-3">
-        <label class="form-label">Morada:</label>
+        <label class="form-label text-danger fw-bold">Morada:</label>
         <div class="row g-2">
           <div class="col-md-8">
             <input type="text" id="morada" class="form-control">
@@ -118,30 +57,31 @@
       </div>
 
       <div class="mb-4">
-        <label class="form-label">Descrição:</label>
+        <label class="form-label text-danger fw-bold">Descrição:</label>
         <input type="text" id="descricao" class="form-control">
       </div>
 
-      <div id="secao-upload" class="mb-3" style="display: none;">
-        <label class="form-label">Anexar imagens:</label>
+      <div id="secao-upload" class="mb-3 d-none">
+        <label class="form-label text-danger fw-bold">Anexar imagens:</label>
         <input type="file" class="form-control" multiple>
       </div>
 
-      <div class="row attachments" id="imagens-existentes" style="display: none;">
-        <div class="col-md-4">
-          <img src="https://i.imgur.com/p1szm0S.jpg" alt="poste1">
+      <div class="row d-none" id="imagens-existentes">
+        <div class="col-md-4 p-2">
+          <img src="https://i.imgur.com/p1szm0S.jpg" alt="poste1" class="img-fluid rounded">
         </div>
-        <div class="col-md-4">
-          <img src="https://i.imgur.com/Gv0FMLj.jpg" alt="poste2">
+        <div class="col-md-4 p-2">
+          <img src="https://i.imgur.com/Gv0FMLj.jpg" alt="poste2" class="img-fluid rounded">
         </div>
-        <div class="col-md-4">
-          <img src="https://i.imgur.com/nWrVkCV.jpg" alt="poste3">
+        <div class="col-md-4 p-2">
+          <img src="https://i.imgur.com/nWrVkCV.jpg" alt="poste3" class="img-fluid rounded">
         </div>
       </div>
+      <!-- Botão de guardar -->
+      <button id="guardarBtn" class="btn btn-success w-100">Guardar</button>
     </div>
   </div>
 
-  <!-- Script para configurar a visualização -->
   <script>
     window.onload = () => {
       const params = new URLSearchParams(window.location.search);
@@ -168,7 +108,7 @@
         codPostal.removeAttribute('readonly');
         descricao.removeAttribute('readonly');
 
-        secaoUpload.style.display = "block";
+        secaoUpload.classList.remove('d-none');
       } else {
         titulo.textContent = "Estruturas debilitadas - Anadia";
         morada.value = "Rua do Barreiro nº5";
@@ -179,10 +119,23 @@
         codPostal.setAttribute('readonly', true);
         descricao.setAttribute('readonly', true);
 
-        secaoUpload.style.display = "none";
-        imagensExistentes.style.display = "flex";
+        imagensExistentes.classList.remove('d-none');
       }
     }
+
+    // Função para guardar os dados no localStorage
+    const guardarBtn = document.getElementById('guardarBtn');
+    guardarBtn.addEventListener('click', () => {
+      const dadosOcorrencia = {
+        morada: document.getElementById('morada').value,
+        codigoPostal: document.getElementById('codigo-postal').value,
+        descricao: document.getElementById('descricao').value
+      };
+
+      // Armazenar os dados no localStorage
+      localStorage.setItem('dadosOcorrencia', JSON.stringify(dadosOcorrencia));
+      alert("Dados guardados localmente!");
+    });
   </script>
 
 </body>
