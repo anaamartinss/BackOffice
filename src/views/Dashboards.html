@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeEverywhere Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      background: #f0f2f5;
+    }
+    .sidebar {
+      width: 200px;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      height: 100vh;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 15px 0;
+      cursor: pointer;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+    .summary {
+      background: #e74c3c;
+      color: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 10px;
+    }
+    .chart-container {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .controls select, .controls button {
+      padding: 5px 10px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>EyeEverywhere</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Listar Peritos</li>
+      <li>Registar Perito</li>
+      <li>Novas Ocorrências</li>
+      <li>Listar Auditorias</li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="summary">
+      <div>🔴 30 Novas Ocorrências</div>
+      <div>47 Auditorias (Concluídas/em análise)</div>
+    </div>
+
+    <!-- Ocorrências -->
+    <div class="chart-container">
+      <div class="controls">
+        <label for="mesSelect">Mês:</label>
+        <select id="mesSelect" onchange="updateOcorrenciasChart()">
+          <option value="all">Todos</option>
+          <option value="0">Janeiro</option>
+          <option value="1">Fevereiro</option>
+          <option value="2">Março</option>
+          <option value="3">Abril</option>
+          <option value="4">Maio</option>
+          <option value="5">Junho</option>
+        </select>
+        <button onclick="exportChart(ocorrenciasChart, 'ocorrencias')">Exportar Gráfico</button>
+      </div>
+      <canvas id="ocorrenciasChart" height="200"></canvas>
+    </div>
+
+    <!-- Material Utilizado -->
+    <div class="chart-container">
+      <div class="controls">
+        <label for="mesMaterialSelect">Mês:</label>
+        <select id="mesMaterialSelect" onchange="updateMaterialChart()">
+          <option value="all">Todos</option>
+          <option value="0">Janeiro</option>
+          <option value="1">Fevereiro</option>
+          <option value="2">Março</option>
+          <option value="3">Abril</option>
+          <option value="4">Maio</option>
+          <option value="5">Junho</option>
+        </select>
+        <button onclick="exportChart(materialChart, 'material')">Exportar Gráfico</button>
+      </div>
+      <canvas id="materialChart" height="200"></canvas>
+    </div>
+
+    <!-- Ocorrências Resolvidas -->
+    <div class="chart-container">
+      <div class="controls">
+        <label for="regiaoSelect">Região:</label>
+        <select id="regiaoSelect" onchange="updateResolvidasChart()">
+          <option value="all">Todas</option>
+          <option value="0">Porto</option>
+          <option value="1">Lisboa</option>
+          <option value="2">Braga</option>
+          <option value="3">Aveiro</option>
+          <option value="4">Alentejo</option>
+          <option value="5">Algarve</option>
+          <option value="6">Madeira</option>
+        </select>
+        <button onclick="exportChart(resolvidasChart, 'resolvidas')">Exportar Gráfico</button>
+      </div>
+      <canvas id="resolvidasChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+    const regioes = ['Porto', 'Lisboa', 'Braga', 'Aveiro', 'Alentejo', 'Algarve', 'Madeira'];
+
+    // Ocorrências
+    const ocorrenciasData = {
+      labels: meses,
+      datasets: [
+        { label: 'Inundações', data: [50, 60, 70, 40, 80, 75], backgroundColor: '#f99' },
+        { label: 'Vegetação massiva', data: [40, 55, 65, 35, 70, 60], backgroundColor: '#9cf' },
+        { label: 'Árvores Caídas', data: [30, 35, 45, 30, 50, 55], backgroundColor: '#ffcc80' }
+      ]
+    };
+
+    const ocorrenciasChart = new Chart(document.getElementById('ocorrenciasChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(ocorrenciasData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Número de ocorrências por mês' } },
+      }
+    });
+
+    function updateOcorrenciasChart() {
+      const index = document.getElementById("mesSelect").value;
+      if (index === "all") {
+        ocorrenciasChart.data = JSON.parse(JSON.stringify(ocorrenciasData));
+      } else {
+        ocorrenciasChart.data.labels = [meses[index]];
+        ocorrenciasChart.data.datasets.forEach((ds, i) => {
+          ds.data = [ocorrenciasData.datasets[i].data[index]];
+        });
+      }
+      ocorrenciasChart.update();
+    }
+
+    // Material
+    const materialData = {
+      labels: meses,
+      datasets: [
+        { label: 'Bombas de Água', data: [10, 40, 30, 20, 25, 35], backgroundColor: '#f77' },
+        { label: 'Candeeiros', data: [20, 30, 40, 25, 30, 20], backgroundColor: '#77f' },
+        { label: 'Lanternas', data: [50, 55, 50, 45, 50, 55], backgroundColor: '#fc3' }
+      ]
+    };
+
+    const materialChart = new Chart(document.getElementById('materialChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(materialData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Material Utilizado por mês' } },
+      }
+    });
+
+    function updateMaterialChart() {
+      const index = document.getElementById("mesMaterialSelect").value;
+      if (index === "all") {
+        materialChart.data = JSON.parse(JSON.stringify(materialData));
+      } else {
+        materialChart.data.labels = [meses[index]];
+        materialChart.data.datasets.forEach((ds, i) => {
+          ds.data = [materialData.datasets[i].data[index]];
+        });
+      }
+      materialChart.update();
+    }
+
+    // Resolvidas
+    const resolvidasData = {
+      labels: regioes,
+      datasets: [
+        { label: 'Concluídas', data: [50, 80, 70, 30, 45, 25, 90], backgroundColor: '#f99' },
+        { label: 'Recebidas', data: [150, 130, 135, 125, 140, 110, 145], type: 'line', borderColor: '#36a2eb', tension: 0.4 }
+      ]
+    };
+
+    const resolvidasChart = new Chart(document.getElementById('resolvidasChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(resolvidasData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Ocorrências Recebidas vs Resolvidas por região' } },
+      }
+    });
+
+    function updateResolvidasChart() {
+      const index = document.getElementById("regiaoSelect").value;
+      if (index === "all") {
+        resolvidasChart.data = JSON.parse(JSON.stringify(resolvidasData));
+      } else {
+        resolvidasChart.data.labels = [regioes[index]];
+        resolvidasChart.data.datasets[0].data = [resolvidasData.datasets[0].data[index]];
+        resolvidasChart.data.datasets[1].data = [resolvidasData.datasets[1].data[index]];
+      }
+      resolvidasChart.update();
+    }
+
+    function exportChart(chart, filename) {
+      const link = document.createElement('a');
+      link.href = chart.toBase64Image();
+      link.download = `${filename}.png`;
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
+
+
