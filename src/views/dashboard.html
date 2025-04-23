@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeEverywhere Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-success active" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="content p-4 w-100">
+      <div class="bg-danger text-white p-3 rounded mb-4 d-flex justify-content-between align-items-center">
+        <div>🔴 <strong>30</strong> Novas Ocorrências</div>
+        <div><strong>47</strong> Auditorias (Concluídas/em análise)</div>
+      </div>
+
+      <!-- Ocorrências -->
+      <div class="bg-white p-4 rounded shadow-sm mb-4">
+        <h5 class="text-success mb-3">Número de ocorrências</h5>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label for="mesSelect">Mês:</label>
+          <div>
+            <select id="mesSelect" class="form-select d-inline w-auto" onchange="updateOcorrenciasChart()">
+              <option value="all">Todos</option>
+              <option value="0">Janeiro</option>
+              <option value="1">Fevereiro</option>
+              <option value="2">Março</option>
+              <option value="3">Abril</option>
+              <option value="4">Maio</option>
+              <option value="5">Junho</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(ocorrenciasChart, 'ocorrencias')">Exportar</button>
+          </div>
+        </div>
+        <canvas id="ocorrenciasChart" height="200"></canvas>
+      </div>
+
+      <!-- Material Utilizado -->
+      <div class="bg-white p-4 rounded shadow-sm mb-4">
+        <h5 class="text-success mb-3">Material Utilizado</h5>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label for="mesMaterialSelect">Mês:</label>
+          <div>
+            <select id="mesMaterialSelect" class="form-select d-inline w-auto" onchange="updateMaterialChart()">
+              <option value="all">Todos</option>
+              <option value="0">Janeiro</option>
+              <option value="1">Fevereiro</option>
+              <option value="2">Março</option>
+              <option value="3">Abril</option>
+              <option value="4">Maio</option>
+              <option value="5">Junho</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(materialChart, 'material')">Exportar</button>
+          </div>
+        </div>
+        <canvas id="materialChart" height="200"></canvas>
+      </div>
+
+      <!-- Ocorrências Resolvidas -->
+      <div class="bg-white p-4 rounded shadow-sm mb-4">
+        <h5 class="text-success mb-3">Número de ocorrências Recebidas e resolvidas</h5>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label for="regiaoSelect">Região:</label>
+          <div>
+            <select id="regiaoSelect" class="form-select d-inline w-auto" onchange="updateResolvidasChart()">
+              <option value="all">Todas</option>
+              <option value="0">Porto</option>
+              <option value="1">Lisboa</option>
+              <option value="2">Braga</option>
+              <option value="3">Aveiro</option>
+              <option value="4">Alentejo</option>
+              <option value="5">Algarve</option>
+              <option value="6">Madeira</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(resolvidasChart, 'resolvidas')">Exportar</button>
+          </div>
+        </div>
+        <canvas id="resolvidasChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts dos Gráficos -->
+  <script>
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+    const regioes = ['Porto', 'Lisboa', 'Braga', 'Aveiro', 'Alentejo', 'Algarve', 'Madeira'];
+
+    const ocorrenciasData = {
+      labels: meses,
+      datasets: [
+        { label: 'Inundações', data: [50, 60, 70, 40, 80, 75], backgroundColor: '#f99' },
+        { label: 'Vegetação massiva', data: [40, 55, 65, 35, 70, 60], backgroundColor: '#9cf' },
+        { label: 'Árvores Caídas', data: [30, 35, 45, 30, 50, 55], backgroundColor: '#ffcc80' }
+      ]
+    };
+
+    const ocorrenciasChart = new Chart(document.getElementById('ocorrenciasChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(ocorrenciasData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Número de ocorrências por mês' } },
+      }
+    });
+
+    function updateOcorrenciasChart() {
+      const index = document.getElementById("mesSelect").value;
+      if (index === "all") {
+        ocorrenciasChart.data = JSON.parse(JSON.stringify(ocorrenciasData));
+      } else {
+        ocorrenciasChart.data.labels = [meses[index]];
+        ocorrenciasChart.data.datasets.forEach((ds, i) => {
+          ds.data = [ocorrenciasData.datasets[i].data[index]];
+        });
+      }
+      ocorrenciasChart.update();
+    }
+
+    const materialData = {
+      labels: meses,
+      datasets: [
+        { label: 'Bombas de Água', data: [10, 40, 30, 20, 25, 35], backgroundColor: '#f77' },
+        { label: 'Candeeiros', data: [20, 30, 40, 25, 30, 20], backgroundColor: '#77f' },
+        { label: 'Lanternas', data: [50, 55, 50, 45, 50, 55], backgroundColor: '#fc3' }
+      ]
+    };
+
+    const materialChart = new Chart(document.getElementById('materialChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(materialData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Material Utilizado por mês' } },
+      }
+    });
+
+    function updateMaterialChart() {
+      const index = document.getElementById("mesMaterialSelect").value;
+      if (index === "all") {
+        materialChart.data = JSON.parse(JSON.stringify(materialData));
+      } else {
+        materialChart.data.labels = [meses[index]];
+        materialChart.data.datasets.forEach((ds, i) => {
+          ds.data = [materialData.datasets[i].data[index]];
+        });
+      }
+      materialChart.update();
+    }
+
+    const resolvidasData = {
+      labels: regioes,
+      datasets: [
+        { label: 'Concluídas', data: [50, 80, 70, 30, 45, 25, 90], backgroundColor: '#f99' },
+        { label: 'Recebidas', data: [150, 130, 135, 125, 140, 110, 145], type: 'line', borderColor: '#36a2eb', tension: 0.4 }
+      ]
+    };
+
+    const resolvidasChart = new Chart(document.getElementById('resolvidasChart'), {
+      type: 'bar',
+      data: JSON.parse(JSON.stringify(resolvidasData)),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Ocorrências Recebidas vs Resolvidas por região' } },
+      }
+    });
+
+    function updateResolvidasChart() {
+      const index = document.getElementById("regiaoSelect").value;
+      if (index === "all") {
+        resolvidasChart.data = JSON.parse(JSON.stringify(resolvidasData));
+      } else {
+        resolvidasChart.data.labels = [regioes[index]];
+        resolvidasChart.data.datasets[0].data = [resolvidasData.datasets[0].data[index]];
+        resolvidasChart.data.datasets[1].data = [resolvidasData.datasets[1].data[index]];
+      }
+      resolvidasChart.update();
+    }
+
+    function exportChart(chart, filename) {
+      const link = document.createElement('a');
+      link.href = chart.toBase64Image();
+      link.download = `${filename}.png`;
+      link.click();
+    }
+  </script>
+</body>
+</html>
+
+
+
