@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
@@ -51,10 +51,10 @@
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        document.getElementById("userInfo").innerHTML = `
-          <p><strong>Usuário:</strong> ${user.displayName}</p>
-          <p><strong>Email:</strong> ${user.email}</p>
-        `;
+
+        // ✅ Redirecionar após login
+        window.location.href = "dashboard.html";
+
       } catch (error) {
         alert("Erro no login: " + error.message);
         console.error("Erro Firebase:", error);
@@ -63,3 +63,4 @@
   </script>
 </body>
 </html>
+
