@@ -51,16 +51,7 @@
           </tr>
         </thead>
         <tbody id="peritos-table">
-          <tr>
-            <td>Carla Sanches</td>
-            <td>Porto, Matosinhos</td>
-            <td>Jardinagem</td>
-            <td>10 seg atrás</td>
-            <td>
-              <button class="btn btn-success btn-sm">Ver detalhes</button>
-              <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
-            </td>
-          </tr>
+          <!-- Os peritos serão carregados aqui -->
         </tbody>
         <tfoot>
           <tr>
@@ -79,7 +70,35 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Função para adicionar uma nova linha à tabela
+    // Função para carregar os peritos do localStorage
+    function carregarPeritos() {
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      const tabela = document.getElementById('peritos-table');
+      tabela.innerHTML = '';
+
+      peritos.forEach((perito, index) => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td>${perito.nome}</td>
+          <td>${perito.morada}</td>
+          <td>${perito.especialidade}</td>
+          <td>${perito.ocorrencia || 'N/A'}</td>
+          <td>
+            <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Ver detalhes</button>
+            <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
+          </td>
+        `;
+        tabela.appendChild(linha);
+      });
+    }
+
+    // Função para redirecionar para a página de edição com os dados do perito
+    function editarPerito(index) {
+      localStorage.setItem('editarPeritoIndex', index); // Salvar o índice do perito no localStorage
+      window.location.href = 'editar-perito.html'; // Redirecionar para a página de edição
+    }
+
+    // Função para adicionar uma nova linha à tabela e salvar no localStorage
     function adicionarLinha() {
       const especialista = document.getElementById('novo-especialista').value;
       const zona = document.getElementById('nova-zona').value;
@@ -96,12 +115,17 @@
           <td>${especialidade}</td>
           <td>${ocorrencia}</td>
           <td>
-            <button class="btn btn-success btn-sm">Ver detalhes</button>
+            <button class="btn btn-success btn-sm" onclick="editarPerito()">Ver detalhes</button>
             <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
           </td>
         `;
 
         tabela.appendChild(novaLinha);
+
+        // Salvar no localStorage
+        const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+        peritos.push({ nome: especialista, morada: zona, especialidade, ocorrencia });
+        localStorage.setItem('peritos', JSON.stringify(peritos));
 
         // Limpar os campos de entrada
         document.getElementById('novo-especialista').value = '';
@@ -116,8 +140,19 @@
     // Função para remover uma linha da tabela
     function removerLinha(botao) {
       const linha = botao.parentElement.parentElement;
+      const nome = linha.children[0].textContent;
+
+      // Remover do localStorage
+      let peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      peritos = peritos.filter(perito => perito.nome !== nome);
+      localStorage.setItem('peritos', JSON.stringify(peritos));
+
+      // Remover da tabela
       linha.remove();
     }
+
+    // Carregar os peritos ao carregar a página
+    window.onload = carregarPeritos;
   </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <link rel="icon" href="/public/favicon.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registar Peritos</title>
+  <title>Editar Perito</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
@@ -23,7 +23,7 @@
           <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-success" href="registar-perito.html">Registar Peritos</a>
+          <a class="nav-link text-white" href="registar-perito.html">Registar Peritos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a>
@@ -38,58 +38,67 @@
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-4">
-      <h1 class="text-success">Registar Peritos</h1>
+      <h1 class="text-success">Editar Perito</h1>
       <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
-      <form id="form-registar-perito">
+      <form id="form-editar-perito">
         <div class="mb-3">
           <label for="nome" class="form-label">Nome do Perito</label>
-          <input type="text" id="nome" class="form-control" placeholder="Digite o nome do perito" required>
+          <input type="text" id="nome" class="form-control" required>
         </div>
         <div class="mb-3">
           <label for="morada" class="form-label">Morada</label>
-          <input type="text" id="morada" class="form-control" placeholder="Digite a morada" required>
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" class="form-control" placeholder="Digite o email" required>
+          <input type="text" id="morada" class="form-control" required>
         </div>
         <div class="mb-3">
           <label for="especialidade" class="form-label">Especialidade</label>
-          <input type="text" id="especialidade" class="form-control" placeholder="Digite a especialidade" required>
+          <input type="text" id="especialidade" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-success">Criar Perito</button>
+        <div class="mb-3">
+          <label for="ocorrencia" class="form-label">Última Ocorrência</label>
+          <input type="text" id="ocorrencia" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">Salvar Alterações</button>
       </form>
     </div>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.getElementById('form-registar-perito').addEventListener('submit', function(event) {
+    // Carregar os dados do perito selecionado
+    function carregarPerito() {
+      const index = localStorage.getItem('editarPeritoIndex');
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      const perito = peritos[index];
+
+      if (perito) {
+        document.getElementById('nome').value = perito.nome;
+        document.getElementById('morada').value = perito.morada;
+        document.getElementById('especialidade').value = perito.especialidade;
+        document.getElementById('ocorrencia').value = perito.ocorrencia || '';
+      }
+    }
+
+    // Salvar as alterações no localStorage
+    document.getElementById('form-editar-perito').addEventListener('submit', function(event) {
       event.preventDefault();
 
-      // Obter os valores dos campos
-      const nome = document.getElementById('nome').value;
-      const morada = document.getElementById('morada').value;
-      const email = document.getElementById('email').value;
-      const especialidade = document.getElementById('especialidade').value;
-
-      // Criar um objeto para o perito
-      const novoPerito = { nome, morada, email, especialidade };
-
-      // Obter a lista de peritos do localStorage
+      const index = localStorage.getItem('editarPeritoIndex');
       const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
 
-      // Adicionar o novo perito à lista
-      peritos.push(novoPerito);
+      peritos[index] = {
+        nome: document.getElementById('nome').value,
+        morada: document.getElementById('morada').value,
+        especialidade: document.getElementById('especialidade').value,
+        ocorrencia: document.getElementById('ocorrencia').value
+      };
 
-      // Salvar a lista atualizada no localStorage
       localStorage.setItem('peritos', JSON.stringify(peritos));
-
-      // Limpar o formulário
-      document.getElementById('form-registar-perito').reset();
-
-      alert('Perito registrado com sucesso!');
+      alert('Alterações salvas com sucesso!');
+      window.location.href = 'listar-peritos.html';
     });
+
+    // Carregar os dados ao abrir a página
+    window.onload = carregarPerito;
   </script>
 </body>
 </html>
