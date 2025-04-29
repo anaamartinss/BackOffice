@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <link rel="icon" href="/public/favicon.png" type="image/png">
-
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Novas Ocorrências</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
-  <style>
-    .btn-acao {
-      min-width: 100px;
-      margin: 2px;
-    }
-  </style>
+  
 </head>
-
 <body>
   <div class="d-flex">
     <!-- Sidebar -->
@@ -24,21 +16,11 @@
       <h4 class="text-white">EyesEverywhere</h4>
       <hr class="text-white">
       <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="registar-perito.html">Registar Perito</a></li>
+        <li class="nav-item"><a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a></li>
       </ul>
       <hr class="text-white">
       <p class="text-white">EyesEverywhere</p>
@@ -49,6 +31,7 @@
       <div class="bg-white p-4 rounded shadow-sm">
         <h2 class="text-success">Novas Ocorrências</h2>
         <hr class="text-success" style="height: 3px; width: 50px; margin-top: 0;">
+
         <table class="table">
           <thead class="table-success">
             <tr>
@@ -59,87 +42,9 @@
               <th class="text-center">Ações</th>
             </tr>
           </thead>
-
           <tbody id="novas-ocorrencias-table">
-            <tr>
-              <td>Algarve</td>
-              <td>Eletricidade</td>
-              <td>Mar 2, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Matosinhos</td>
-              <td>Poluição atmosférica</td>
-              <td>Mar 28, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Guimarães</td>
-              <td>Inundações</td>
-              <td>Mar 18, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Guarda</td>
-              <td>Estruturas debilitadas</td>
-              <td>Mar 29, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Bragança</td>
-              <td>Desperdício de água</td>
-              <td>Abril 2, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Valongo</td>
-              <td>Rios poluídos</td>
-              <td>Mar 10, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Felgueiras</td>
-              <td>Incêndios</td>
-              <td>Mar 20, 2025</td>
-              <td>Em aberto</td>
-              <td class="text-center">
-                <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-                <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-                <button class="btn btn-success btn-acao" onclick="verDetalhes(true)">Ver detalhes</button>
-              </td>
-            </tr>
+            <!-- As ocorrências serão carregadas aqui -->
           </tbody>
-
           <tfoot>
             <tr>
               <td><input type="text" id="nova-localidade" class="form-control form-control-sm" placeholder="Localidade"></td>
@@ -147,7 +52,7 @@
               <td><input type="date" id="nova-data" class="form-control form-control-sm"></td>
               <td><input type="text" id="novo-estado" class="form-control form-control-sm" placeholder="Estado"></td>
               <td>
-                <button class="btn btn-primary btn-sm btn-acao" onclick="adicionarLinha()">Adicionar</button>
+                <button type="button" class="btn btn-primary btn-sm btn-acao" onclick="adicionarLinha()">Adicionar</button>
               </td>
             </tr>
           </tfoot>
@@ -156,54 +61,66 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
+  <!-- Bootstrap JS + nosso script -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    function adicionarLinha() {
-      const localidade = document.getElementById('nova-localidade').value;
-      const tipo = document.getElementById('novo-tipo').value;
-      const data = document.getElementById('nova-data').value;
-      const estado = document.getElementById('novo-estado').value;
+    // Função para carregar ocorrências do localStorage
+    function carregarOcorrencias() {
+      const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
+      const tabela = document.getElementById('novas-ocorrencias-table');
+      tabela.innerHTML = '';
 
-      if (localidade && tipo && data && estado) {
-        const tabela = document.getElementById('novas-ocorrencias-table');
-        const novaLinha = document.createElement('tr');
-
-        novaLinha.innerHTML = `
-          <td>${localidade}</td>
-          <td>${tipo}</td>
-          <td>${new Date(data).toLocaleDateString('pt-PT', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-          <td>${estado}</td>
+      ocorrencias.forEach((o, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.local}</td>
+          <td>${o.tipo_ocorrencia}</td>
+          <td>${o.data || ''}</td>
+          <td>${o.estado || 'Pendente'}</td>
           <td class="text-center">
-            <a href="associar-peritos.html" class="btn btn-success btn-acao">Associar</a>
-            <button class="btn btn-danger btn-acao" onclick="removerLinha(this)">Rejeitar</button>
-            <button class="btn btn-success btn-acao">Ver detalhes</button>
-          </td>
-        `;
-
-        tabela.appendChild(novaLinha);
-
-        // Limpar os campos
-        document.getElementById('nova-localidade').value = '';
-        document.getElementById('novo-tipo').value = '';
-        document.getElementById('nova-data').value = '';
-        document.getElementById('novo-estado').value = '';
-      } else {
-        alert('Por favor, preencha todos os campos antes de adicionar.');
-      }
+            <button class="btn btn-sm btn-success btn-acao" onclick="aprovarOcorrencia(${index})">Aprovar</button>
+            <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${index})">Rejeitar</button>
+          </td>`;
+        tabela.appendChild(tr);
+      });
     }
 
-    function removerLinha(botao) {
-      const linha = botao.closest('tr');
-      linha.remove();
+    // Função para adicionar uma nova ocorrência ao localStorage
+    function adicionarLinha() {
+      const nova = {
+        local: document.getElementById('nova-localidade').value,
+        tipo_ocorrencia: document.getElementById('novo-tipo').value,
+        data: document.getElementById('nova-data').value,
+        estado: document.getElementById('novo-estado').value || 'Pendente'
+      };
+
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      ocorrencias.push(nova);
+      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+
+      // Limpa os campos do formulário e recarrega a tabela
+      ['nova-localidade', 'novo-tipo', 'nova-data', 'novo-estado'].forEach(id => document.getElementById(id).value = '');
+      carregarOcorrencias();
     }
 
-    function verDetalhes(isNova) {
-      const url = `ver-detalhes.html?nova=${isNova ? '1' : '0'}`;
-      window.location.href = url;
+    // Função para aprovar uma ocorrência
+    function aprovarOcorrencia(index) {
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      ocorrencias[index].estado = 'Aprovada';
+      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+      carregarOcorrencias();
     }
 
+    // Função para rejeitar uma ocorrência
+    function rejeitarOcorrencia(index) {
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      ocorrencias.splice(index, 1); // Remove a ocorrência da lista
+      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+      carregarOcorrencias();
+    }
+
+    // Carregar as ocorrências ao abrir a página
+    document.addEventListener('DOMContentLoaded', carregarOcorrencias);
   </script>
 </body>
 </html>

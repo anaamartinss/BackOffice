@@ -82,61 +82,7 @@
     </div>
   </div>
 
-  <script>
-    window.onload = () => {
-      const params = new URLSearchParams(window.location.search);
-      const isNova = params.get('nova') === '1';
-
-      const titulo = document.getElementById('titulo-ocorrencia');
-      const morada = document.getElementById('morada');
-      const codPostal = document.getElementById('codigo-postal');
-      const descricao = document.getElementById('descricao');
-      const secaoUpload = document.getElementById('secao-upload');
-      const imagensExistentes = document.getElementById('imagens-existentes');
-
-      if (isNova) {
-        titulo.textContent = "Nova Ocorrência";
-        morada.value = "";
-        codPostal.value = "";
-        descricao.value = "";
-
-        morada.placeholder = "Morada";
-        codPostal.placeholder = "Código Postal";
-        descricao.placeholder = "Descrição";
-
-        morada.removeAttribute('readonly');
-        codPostal.removeAttribute('readonly');
-        descricao.removeAttribute('readonly');
-
-        secaoUpload.classList.remove('d-none');
-      } else {
-        titulo.textContent = "Estruturas debilitadas - Anadia";
-        morada.value = "Rua do Barreiro nº5";
-        codPostal.value = "3780-187";
-        descricao.value = "Poste de iluminação inclinado na Rua do Barreiro ameaça segurança na via pública";
-
-        morada.setAttribute('readonly', true);
-        codPostal.setAttribute('readonly', true);
-        descricao.setAttribute('readonly', true);
-
-        imagensExistentes.classList.remove('d-none');
-      }
-    }
-
-    // Função para guardar os dados no localStorage
-    const guardarBtn = document.getElementById('guardarBtn');
-    guardarBtn.addEventListener('click', () => {
-      const dadosOcorrencia = {
-        morada: document.getElementById('morada').value,
-        codigoPostal: document.getElementById('codigo-postal').value,
-        descricao: document.getElementById('descricao').value
-      };
-
-      // Armazenar os dados no localStorage
-      localStorage.setItem('dadosOcorrencia', JSON.stringify(dadosOcorrencia));
-      alert("Dados guardados localmente!");
-    });
-  </script>
+  <script src="../js/main.js"></script>
 
 </body>
 </html>

@@ -150,111 +150,40 @@
   </div>
   
   <script>
-    const peritos = [
-      {
-        nome: "Carla Sanches",
-        especialidade: "Eletricidade",
-        localidade: "Portalegre",
-        disponibilidade: "Disponível",
-        foto: "https://randomuser.me/api/portraits/women/44.jpg"
-      },
-      {
-        nome: "Rui Pinheiro",
-        especialidade: "Poluição atmosférica",
-        localidade: "Faro",
-        disponibilidade: "Disponível",
-        foto: "https://randomuser.me/api/portraits/men/45.jpg"
-      },
-      {
-        nome: "Diego Kong",
-        especialidade: "Inundações",
-        localidade: "Bragança",
-        disponibilidade: "Indisponível",
-        foto: "https://randomuser.me/api/portraits/men/46.jpg"
-      },
-      {
-        nome: "Mariana Sousa",
-        especialidade: "Estruturas debilitadas",
-        localidade: "Beja",
-        disponibilidade: "Disponível",
-        foto: "https://randomuser.me/api/portraits/women/47.jpg"
-      },
-      {
-        nome: "Filipa Oliveira",
-        especialidade: "Desperdício de água",
-        localidade: "Lisboa",
-        disponibilidade: "Disponível",
-        foto: "https://randomuser.me/api/portraits/women/48.jpg"
-      },
-      {
-        nome: "João Martins",
-        especialidade: "Rios poluídos",
-        localidade: "Coimbra",
-        disponibilidade: "Disponível",
-        foto: "https://randomuser.me/api/portraits/men/49.jpg"
-      },
-      {
-        nome: "Luís Carvalho",
-        especialidade: "Incêndios",
-        localidade: "Porto",
-        disponibilidade: "Indisponível",
-        foto: "https://randomuser.me/api/portraits/men/50.jpg"
-      }
-    ];
+/**
+ * Section: associar-peritos.html
+ */
+function carregarPeritosParaAssociacao() {
+  const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+  const corpoTabela = document.getElementById('corpoTabela');
+  corpoTabela.innerHTML = '';
 
-    const filtroTipo = document.getElementById('filtroTipo');
-    const filtroNome = document.getElementById('filtroNome');
-    const filtroLocalidade = document.getElementById('filtroLocalidade'); // Reservado, sem dados por agora
-    const corpoTabela = document.getElementById('corpoTabela');
+  peritos.forEach(perito => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="perfil">
+          <img src="https://via.placeholder.com/40" alt="${perito.nome}">
+          <div>
+            <strong>${perito.nome}</strong><br>
+            <span>Especialidade: ${perito.especialidade}</span><br>
+            <span>Localidade: ${perito.morada}</span>
+          </div>
+        </div>
+      </td>
+      <td>Disponível</td>
+      <td><button class="btn-associar" onclick="associar('${perito.nome}')">Associar</button></td>
+    `;
+    corpoTabela.appendChild(tr);
+  });
+}
 
-    function renderTabela() {
-        const nomeFiltro = filtroNome.value.toLowerCase();
-        const tipoFiltro = filtroTipo.value;
-        const localidadeFiltro = filtroLocalidade.value.toLowerCase();
+function associar(nome) {
+  alert(`Perito ${nome} associado com sucesso!`);
+}
 
-        corpoTabela.innerHTML = "";
-
-        peritos.forEach(perito => {
-            const nomeOk = perito.nome.toLowerCase().includes(nomeFiltro);
-            const tipoOk = tipoFiltro === "" || perito.especialidade === tipoFiltro;
-            const localidadeOk = perito.localidade.toLowerCase().includes(localidadeFiltro);
-
-            if (nomeOk && tipoOk && localidadeOk) {
-                const tr = document.createElement("tr");
-
-                tr.innerHTML = `
-                <td>
-                <div class="perfil">
-                    <img src="${perito.foto}" alt="${perito.nome}">
-                    <div>
-                        <strong>${perito.nome}</strong><br>
-                        <span>Especialidade: ${perito.especialidade}</span><br>
-                        <span>Localidade: ${perito.localidade}</span>
-                    </div>
-                </div>
-                </td>
-                <td>${perito.disponibilidade}</td>
-                <td><button class="btn-associar" onclick="associar('${perito.nome}', '${perito.disponibilidade}')">Associar</button></td>
-                `;
-
-            corpoTabela.appendChild(tr);
-            }
-        });
-    }
-
-    function associar(nome, disponibilidade) {
-    if (disponibilidade === "Disponível") {
-        alert(`Perito ${nome} associado com sucesso!`);
-    } else {
-        alert(`Não foi possível associar o perito ${nome} (Indisponível).`);
-    }
-    }
-
-    filtroTipo.addEventListener('input', renderTabela);
-    filtroNome.addEventListener('input', renderTabela);
-    filtroLocalidade.addEventListener('input', renderTabela);
-
-    renderTabela();
+// Carregar os peritos ao carregar a página
+window.onload = carregarPeritosParaAssociacao;
   </script>
 
 </body>

@@ -122,28 +122,6 @@
   </div>
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function filtrarTabela() {
-      const localidadeInput = document.getElementById('localidade').value.toLowerCase();
-      const estadoInput = document.getElementById('estado').value;
-      const tabela = document.getElementById('auditorias-table');
-      const linhas = tabela.getElementsByTagName('tr');
-
-      for (let i = 0; i < linhas.length; i++) {
-        const colunas = linhas[i].getElementsByTagName('td');
-        const localidade = colunas[0].textContent.toLowerCase();
-        const estado = colunas[3].textContent;
-
-        if (
-          (localidade.includes(localidadeInput) || localidadeInput === '') &&
-          (estado === estadoInput || estadoInput === '')
-        ) {
-          linhas[i].style.display = '';
-        } else {
-          linhas[i].style.display = 'none';
-        }
-      }
-    }
-  </script>
+  <script src="../js/main.js"></script>
 </body>
 </html>

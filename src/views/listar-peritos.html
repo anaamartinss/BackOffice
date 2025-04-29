@@ -55,28 +55,48 @@
         </tbody>
         <tfoot>
           <tr>
-            <td><input type="text" id="novo-especialista" class="form-control form-control-sm" placeholder="Nome do Perito"></td>
-            <td><input type="text" id="nova-zona" class="form-control form-control-sm" placeholder="Zona"></td>
-            <td><input type="text" id="nova-especialidade" class="form-control form-control-sm" placeholder="Especialidade"></td>
-            <td><input type="text" id="nova-ocorrencia" class="form-control form-control-sm" placeholder="Última Ocorrência"></td>
-            <td>
-              <button class="btn btn-primary btn-sm" onclick="adicionarLinha()">Adicionar</button>
-            </td>
+            <td><input type="text" id="filtro-especialista" class="form-control form-control-sm" placeholder="Filtrar por nome" oninput="filtrarPeritos()"></td>
+            <td><input type="text" id="filtro-zona" class="form-control form-control-sm" placeholder="Filtrar por zona" oninput="filtrarPeritos()"></td>
+            <td><input type="text" id="filtro-especialidade" class="form-control form-control-sm" placeholder="Filtrar por especialidade" oninput="filtrarPeritos()"></td>
+            <td><input type="text" id="filtro-ocorrencia" class="form-control form-control-sm" placeholder="Filtrar por ocorrência" oninput="filtrarPeritos()"></td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
     </div>
   </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    // Função para carregar os peritos do localStorage
     function carregarPeritos() {
       const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      renderizarTabela(peritos);
+    }
+
+    function filtrarPeritos() {
+      const filtroNome = document.getElementById('filtro-especialista').value.toLowerCase();
+      const filtroZona = document.getElementById('filtro-zona').value.toLowerCase();
+      const filtroEspecialidade = document.getElementById('filtro-especialidade').value.toLowerCase();
+      const filtroOcorrencia = document.getElementById('filtro-ocorrencia').value.toLowerCase();
+
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      const filtrados = peritos.filter(perito =>
+        perito.nome.toLowerCase().includes(filtroNome) &&
+        perito.morada.toLowerCase().includes(filtroZona) &&
+        perito.especialidade.toLowerCase().includes(filtroEspecialidade) &&
+        (perito.ocorrencia || '').toLowerCase().includes(filtroOcorrencia)
+      );
+
+      renderizarTabela(filtrados);
+    }
+
+    function renderizarTabela(lista) {
       const tabela = document.getElementById('peritos-table');
       tabela.innerHTML = '';
 
-      peritos.forEach((perito, index) => {
+      lista.forEach((perito, index) => {
         const linha = document.createElement('tr');
         linha.innerHTML = `
           <td>${perito.nome}</td>
@@ -84,7 +104,7 @@
           <td>${perito.especialidade}</td>
           <td>${perito.ocorrencia || 'N/A'}</td>
           <td>
-            <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Ver detalhes</button>
+            <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Editar</button>
             <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
           </td>
         `;
@@ -92,66 +112,22 @@
       });
     }
 
-    // Função para redirecionar para a página de edição com os dados do perito
     function editarPerito(index) {
-      localStorage.setItem('editarPeritoIndex', index); // Salvar o índice do perito no localStorage
-      window.location.href = 'editar-perito.html'; // Redirecionar para a página de edição
+      localStorage.setItem('editarPeritoIndex', index);
+      window.location.href = 'editar-perito.html';
     }
 
-    // Função para adicionar uma nova linha à tabela e salvar no localStorage
-    function adicionarLinha() {
-      const especialista = document.getElementById('novo-especialista').value;
-      const zona = document.getElementById('nova-zona').value;
-      const especialidade = document.getElementById('nova-especialidade').value;
-      const ocorrencia = document.getElementById('nova-ocorrencia').value;
-
-      if (especialista && zona && especialidade && ocorrencia) {
-        const tabela = document.getElementById('peritos-table');
-        const novaLinha = document.createElement('tr');
-
-        novaLinha.innerHTML = `
-          <td>${especialista}</td>
-          <td>${zona}</td>
-          <td>${especialidade}</td>
-          <td>${ocorrencia}</td>
-          <td>
-            <button class="btn btn-success btn-sm" onclick="editarPerito()">Ver detalhes</button>
-            <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
-          </td>
-        `;
-
-        tabela.appendChild(novaLinha);
-
-        // Salvar no localStorage
-        const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
-        peritos.push({ nome: especialista, morada: zona, especialidade, ocorrencia });
-        localStorage.setItem('peritos', JSON.stringify(peritos));
-
-        // Limpar os campos de entrada
-        document.getElementById('novo-especialista').value = '';
-        document.getElementById('nova-zona').value = '';
-        document.getElementById('nova-especialidade').value = '';
-        document.getElementById('nova-ocorrencia').value = '';
-      } else {
-        alert('Por favor, preencha todos os campos antes de adicionar.');
-      }
-    }
-
-    // Função para remover uma linha da tabela
     function removerLinha(botao) {
       const linha = botao.parentElement.parentElement;
       const nome = linha.children[0].textContent;
 
-      // Remover do localStorage
       let peritos = JSON.parse(localStorage.getItem('peritos')) || [];
       peritos = peritos.filter(perito => perito.nome !== nome);
       localStorage.setItem('peritos', JSON.stringify(peritos));
 
-      // Remover da tabela
       linha.remove();
     }
 
-    // Carregar os peritos ao carregar a página
     window.onload = carregarPeritos;
   </script>
 </body>
