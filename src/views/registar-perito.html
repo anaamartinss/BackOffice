@@ -43,7 +43,7 @@
       <form id="form-registar-perito">
         <div class="mb-3">
           <label for="nome" class="form-label">Nome do Perito</label>
-          <input type="text" id="nome" class="form-control" placeholder="Digite do nome do perito" required>
+          <input type="text" id="nome" class="form-control" placeholder="Digite o nome do perito" required>
         </div>
         <div class="mb-3">
           <label for="morada" class="form-label">Morada</label>
@@ -54,8 +54,20 @@
           <input type="email" id="email" class="form-control" placeholder="Digite o email" required>
         </div>
         <div class="mb-3">
+          <label for="telemovel" class="form-label">Nº de Telemóvel</label>
+          <input type="text" id="telemovel" class="form-control" placeholder="Digite o número de telemóvel" required>
+        </div>
+        <div class="mb-3">
+          <label for="data-nascimento" class="form-label">Data de Nascimento</label>
+          <input type="date" id="data-nascimento" class="form-control" required>
+        </div>
+        <div class="mb-3">
           <label for="especialidade" class="form-label">Especialidade</label>
           <input type="text" id="especialidade" class="form-control" placeholder="Digite a especialidade" required>
+        </div>
+        <div class="mb-3">
+          <label for="fotografia" class="form-label">Fotografia do Perito</label>
+          <input type="file" id="fotografia" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-success">Criar Perito</button>
       </form>
@@ -71,24 +83,39 @@
       const nome = document.getElementById('nome').value;
       const morada = document.getElementById('morada').value;
       const email = document.getElementById('email').value;
+      const telemovel = document.getElementById('telemovel').value;
+      const dataNascimento = document.getElementById('data-nascimento').value;
       const especialidade = document.getElementById('especialidade').value;
+      const fotografiaInput = document.getElementById('fotografia');
+      let fotografia = '';
 
-      // Criar um objeto para o perito
-      const novoPerito = { nome, morada, email, especialidade };
+      // Ler a fotografia como Base64
+      if (fotografiaInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotografia = e.target.result;
 
-      // Obter a lista de peritos do localStorage
-      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+          // Criar um objeto para o perito
+          const novoPerito = { nome, morada, email, telemovel, dataNascimento, especialidade, fotografia };
 
-      // Adicionar o novo perito à lista
-      peritos.push(novoPerito);
+          // Obter a lista de peritos do localStorage
+          const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
 
-      // Salvar a lista atualizada no localStorage
-      localStorage.setItem('peritos', JSON.stringify(peritos));
+          // Adicionar o novo perito à lista
+          peritos.push(novoPerito);
 
-      // Limpar o formulário
-      document.getElementById('form-registar-perito').reset();
+          // Salvar a lista atualizada no localStorage
+          localStorage.setItem('peritos', JSON.stringify(peritos));
 
-      alert('Perito registrado com sucesso!');
+          // Limpar o formulário
+          document.getElementById('form-registar-perito').reset();
+
+          alert('Perito registrado com sucesso!');
+        };
+        reader.readAsDataURL(fotografiaInput.files[0]);
+      } else {
+        alert('Por favor, insira uma fotografia do perito.');
+      }
     });
   </script>
 </body>

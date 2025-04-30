@@ -47,21 +47,13 @@
             <th>Zona</th>
             <th>Especialidade</th>
             <th>Última Ocorrência</th>
+            <th>Status</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody id="peritos-table">
           <!-- Os peritos serão carregados aqui -->
         </tbody>
-        <tfoot>
-          <tr>
-            <td><input type="text" id="filtro-especialista" class="form-control form-control-sm" placeholder="Filtrar por nome" oninput="filtrarPeritos()"></td>
-            <td><input type="text" id="filtro-zona" class="form-control form-control-sm" placeholder="Filtrar por zona" oninput="filtrarPeritos()"></td>
-            <td><input type="text" id="filtro-especialidade" class="form-control form-control-sm" placeholder="Filtrar por especialidade" oninput="filtrarPeritos()"></td>
-            <td><input type="text" id="filtro-ocorrencia" class="form-control form-control-sm" placeholder="Filtrar por ocorrência" oninput="filtrarPeritos()"></td>
-            <td></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
@@ -75,23 +67,6 @@
       renderizarTabela(peritos);
     }
 
-    function filtrarPeritos() {
-      const filtroNome = document.getElementById('filtro-especialista').value.toLowerCase();
-      const filtroZona = document.getElementById('filtro-zona').value.toLowerCase();
-      const filtroEspecialidade = document.getElementById('filtro-especialidade').value.toLowerCase();
-      const filtroOcorrencia = document.getElementById('filtro-ocorrencia').value.toLowerCase();
-
-      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
-      const filtrados = peritos.filter(perito =>
-        perito.nome.toLowerCase().includes(filtroNome) &&
-        perito.morada.toLowerCase().includes(filtroZona) &&
-        perito.especialidade.toLowerCase().includes(filtroEspecialidade) &&
-        (perito.ocorrencia || '').toLowerCase().includes(filtroOcorrencia)
-      );
-
-      renderizarTabela(filtrados);
-    }
-
     function renderizarTabela(lista) {
       const tabela = document.getElementById('peritos-table');
       tabela.innerHTML = '';
@@ -103,9 +78,9 @@
           <td>${perito.morada}</td>
           <td>${perito.especialidade}</td>
           <td>${perito.ocorrencia || 'N/A'}</td>
+          <td>${perito.ativo ? 'Ativo' : 'Inativo'}</td>
           <td>
             <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="removerLinha(this)">Remover</button>
           </td>
         `;
         tabela.appendChild(linha);
@@ -115,17 +90,6 @@
     function editarPerito(index) {
       localStorage.setItem('editarPeritoIndex', index);
       window.location.href = 'editar-perito.html';
-    }
-
-    function removerLinha(botao) {
-      const linha = botao.parentElement.parentElement;
-      const nome = linha.children[0].textContent;
-
-      let peritos = JSON.parse(localStorage.getItem('peritos')) || [];
-      peritos = peritos.filter(perito => perito.nome !== nome);
-      localStorage.setItem('peritos', JSON.stringify(peritos));
-
-      linha.remove();
     }
 
     window.onload = carregarPeritos;

@@ -54,17 +54,20 @@
           <input type="text" id="especialidade" class="form-control" required>
         </div>
         <div class="mb-3">
-          <label for="ocorrencia" class="form-label">Última Ocorrência</label>
-          <input type="text" id="ocorrencia" class="form-control">
+          <label for="status" class="form-label">Status</label>
+          <select id="status" class="form-select">
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
         </div>
         <button type="submit" class="btn btn-success">Salvar Alterações</button>
       </form>
     </div>
   </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Carregar os dados do perito selecionado
     function carregarPerito() {
       const index = localStorage.getItem('editarPeritoIndex');
       const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
@@ -74,11 +77,10 @@
         document.getElementById('nome').value = perito.nome;
         document.getElementById('morada').value = perito.morada;
         document.getElementById('especialidade').value = perito.especialidade;
-        document.getElementById('ocorrencia').value = perito.ocorrencia || '';
+        document.getElementById('status').value = perito.ativo;
       }
     }
 
-    // Salvar as alterações no localStorage
     document.getElementById('form-editar-perito').addEventListener('submit', function(event) {
       event.preventDefault();
 
@@ -89,7 +91,7 @@
         nome: document.getElementById('nome').value,
         morada: document.getElementById('morada').value,
         especialidade: document.getElementById('especialidade').value,
-        ocorrencia: document.getElementById('ocorrencia').value
+        ativo: document.getElementById('status').value === 'true'
       };
 
       localStorage.setItem('peritos', JSON.stringify(peritos));
@@ -97,7 +99,6 @@
       window.location.href = 'listar-peritos.html';
     });
 
-    // Carregar os dados ao abrir a página
     window.onload = carregarPerito;
   </script>
 </body>
