@@ -49,8 +49,10 @@
   </div>
 
   <div class="row">
+  <!-- Gráficos à esquerda -->
+  <div class="col-md-8">
     <!-- Ocorrências -->
-    <div class="col-md-6 mb-4">
+    <div class="mb-4">
       <div class="bg-white p-3 rounded shadow-sm">
         <h5 class="text-success mb-3">Número de ocorrências</h5>
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -71,9 +73,9 @@
         <canvas id="ocorrenciasChart" height="150"></canvas>
       </div>
     </div>
-  
+
     <!-- Material Utilizado -->
-    <div class="col-md-6 mb-4">
+    <div class="mb-4">
       <div class="bg-white p-3 rounded shadow-sm">
         <h5 class="text-success mb-3">Material Utilizado</h5>
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -95,14 +97,12 @@
       </div>
     </div>
   </div>
-  
-  <!-- Ocorrências Resolvidas -->
-<div class="bg-white p-3 rounded shadow-sm mb-4 mx-auto" style="max-width: 800px;">
-  <h5 class="text-success mb-3">Número de ocorrências Recebidas e resolvidas</h5>
-  <div class="d-flex justify-content-between align-items-center mb-2">
-    <label for="regiaoSelect">Região:</label>
-    <div>
-      <select id="regiaoSelect" class="form-select d-inline w-auto" onchange="updateResolvidasChart()">
+
+  <!-- Dashboard lateral direita -->
+  <div class="col-md-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="regiaoSelect" class="form-label fw-bold mb-0">Filtrar por Região:</label>
+      <select id="regiaoSelect" class="form-select w-auto" onchange="updateResumoOcorrencias()">
         <option value="all">Todas</option>
         <option value="0">Porto</option>
         <option value="1">Lisboa</option>
@@ -112,11 +112,32 @@
         <option value="5">Algarve</option>
         <option value="6">Madeira</option>
       </select>
-      <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(resolvidasChart, 'resolvidas')">Exportar</button>
+    </div>
+
+    <div class="d-flex flex-column gap-3">
+      <!-- Ocorrências Recebidas -->
+      <div id="cardRecebidas" class="border rounded p-3 bg-light d-flex align-items-center justify-content-between">
+        <div>
+          <h6 class="text-muted mb-1">Ocorrências Recebidas</h6>
+          <p class="display-6 fw-bold mb-0" id="ocorrenciasRecebidas">-</p>
+        </div>
+        <i class="bi bi-inbox-fill" id="iconRecebidas" style="font-size: 2.5rem;"></i>
+      </div>
+
+      <!-- Ocorrências Resolvidas -->
+      <div id="cardResolvidas" class="border rounded p-3 bg-light d-flex align-items-center justify-content-between">
+        <div>
+          <h6 class="text-muted mb-1">Ocorrências Resolvidas</h6>
+          <p class="display-6 fw-bold mb-0" id="ocorrenciasResolvidas">-</p>
+        </div>
+        <i class="bi bi-check-circle-fill" id="iconResolvidas" style="font-size: 2.5rem;"></i>
+      </div>
     </div>
   </div>
-  <canvas id="resolvidasChart" height="130"></canvas>
 </div>
+
+  
+
   
 
   <!-- Scripts dos Gráficos -->
@@ -194,26 +215,63 @@
       ]
     };
 
-    const resolvidasChart = new Chart(document.getElementById('resolvidasChart'), {
-      type: 'bar',
-      data: JSON.parse(JSON.stringify(resolvidasData)),
-      options: {
-        responsive: true,
-        plugins: { title: { display: true, text: 'Ocorrências Recebidas vs Resolvidas por região' } },
-      }
-    });
+    const dadosOcorrencias = {
+  recebidas: [150, 130, 135, 125, 140, 110, 145],
+  resolvidas: [50, 80, 70, 30, 45, 25, 90]
+};
 
-    function updateResolvidasChart() {
-      const index = document.getElementById("regiaoSelect").value;
-      if (index === "all") {
-        resolvidasChart.data = JSON.parse(JSON.stringify(resolvidasData));
-      } else {
-        resolvidasChart.data.labels = [regioes[index]];
-        resolvidasChart.data.datasets[0].data = [resolvidasData.datasets[0].data[index]];
-        resolvidasChart.data.datasets[1].data = [resolvidasData.datasets[1].data[index]];
-      }
-      resolvidasChart.update();
-    }
+function updateResumoOcorrencias() {
+  const select = document.getElementById('regiaoSelect');
+  const index = select.value;
+
+  const recebidasEl = document.getElementById('ocorrenciasRecebidas');
+  const resolvidasEl = document.getElementById('ocorrenciasResolvidas');
+
+  const cardRecebidas = document.getElementById('cardRecebidas');
+  const cardResolvidas = document.getElementById('cardResolvidas');
+
+  const iconRecebidas = document.getElementById('iconRecebidas');
+  const iconResolvidas = document.getElementById('iconResolvidas');
+
+  let recebidas, resolvidas;
+
+  if (index === "all") {
+    recebidas = dadosOcorrencias.recebidas.reduce((a, b) => a + b, 0);
+    resolvidas = dadosOcorrencias.resolvidas.reduce((a, b) => a + b, 0);
+  } else {
+    recebidas = dadosOcorrencias.recebidas[index];
+    resolvidas = dadosOcorrencias.resolvidas[index];
+  }
+
+  recebidasEl.textContent = recebidas;
+  resolvidasEl.textContent = resolvidas;
+
+  // Limpa classes anteriores
+  [cardRecebidas, iconRecebidas].forEach(el => el.classList.remove('text-danger', 'text-warning', 'text-success'));
+  [cardResolvidas, iconResolvidas].forEach(el => el.classList.remove('text-danger', 'text-warning', 'text-success'));
+
+  // Aplica classes de cor baseadas nos valores
+  applyColor(recebidas, cardRecebidas, iconRecebidas);
+  applyColor(resolvidas, cardResolvidas, iconResolvidas);
+}
+
+function applyColor(value, card, icon) {
+  let color;
+  if (value < 50) {
+    color = 'text-danger';
+  } else if (value < 100) {
+    color = 'text-warning';
+  } else {
+    color = 'text-success';
+  }
+  card.classList.add(color);
+  icon.classList.add(color);
+}
+
+
+// Inicializa valores ao carregar a página
+updateResumoOcorrencias();
+
 
     function exportChart(chart, filename) {
       const link = document.createElement('a');
