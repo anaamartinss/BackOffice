@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+  <link rel="icon" href="/public/favicon.png" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Novas Ocorrências</title>
@@ -28,9 +29,10 @@
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-4">
-      <div class="bg-white p-4 rounded shadow-sm">
-        <h2 class="text-success">Novas Ocorrências</h2>
-        <hr class="text-success" style="height: 3px; width: 50px; margin-top: 0;">
+      <h1 class="text-success">Novas Ocorrências</h1>
+      <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
+      <div class="bg-white p-4 rounded shadow-sm mt-4">
+    
 
         <table class="table">
           <thead class="table-success">
@@ -66,7 +68,7 @@
   <script>
     // Função para carregar ocorrências do localStorage
     function carregarOcorrencias() {
-      const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
       const tabela = document.getElementById('novas-ocorrencias-table');
       tabela.innerHTML = '';
 
@@ -78,13 +80,13 @@
           <td>${o.data || ''}</td>
           <td>${o.estado || 'Pendente'}</td>
           <td class="text-center">
-            <button class="btn btn-sm btn-success btn-acao" onclick="aprovarOcorrencia(${index})">Aprovar</button>
+            <a href="associar-peritos.html" class="btn btn-sm btn-success btn-acao">Associar</a>
+            <a href="ver-detalhes.html" class="btn btn-sm btn-info btn-acao">Ver Detalhes</a>
             <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${index})">Rejeitar</button>
           </td>`;
         tabela.appendChild(tr);
       });
     }
-
     // Função para adicionar uma nova ocorrência ao localStorage
     function adicionarLinha() {
       const nova = {

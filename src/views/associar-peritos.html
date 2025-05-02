@@ -25,15 +25,7 @@
     }
 
     .filters {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filters input,
-    .filters select {
-      padding: 5px;
-      font-size: 14px;
+      margin-bottom: 15px;
     }
 
     table {
@@ -86,21 +78,11 @@
       <h4 class="text-white">EyesEverywhere</h4>
       <hr class="text-white">
       <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="registar-perito.html">Registar Perito</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a></li>
       </ul>
       <hr class="text-white">
       <p class="text-white">EyesEverywhere</p>
@@ -110,9 +92,10 @@
     <div class="flex-grow-1">
       <div class="header">
         <h2>Associar Perito</h2>
-        <div class="filters">
-          <label>Tipo de Ocorrência:
-            <select id="filtroTipo">
+        <div class="filters row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Tipo de Ocorrência:</label>
+            <select id="filtroTipo" class="form-select">
               <option value="">Escolher...</option>
               <option value="Eletricidade">Eletricidade</option>
               <option value="Poluição atmosférica">Poluição atmosférica</option>
@@ -122,15 +105,24 @@
               <option value="Rios poluídos">Rios poluídos</option>
               <option value="Incêndios">Incêndios</option>
             </select>
-          </label>
+          </div>
 
-          <label>Nome:
-            <input type="text" id="filtroNome" placeholder="Nome do perito">
-          </label>
+          <div class="col-md-4">
+            <label class="form-label">Nome:</label>
+            <input type="text" id="filtroNome" class="form-control" placeholder="Nome do perito">
+          </div>
 
-          <label>Localidade:
-            <input type="text" id="filtroLocalidade" placeholder="Localidade">
-          </label>
+          <div class="col-md-4">
+            <label class="form-label">Localidade:</label>
+            <select id="filtroLocalidade" class="form-select">
+              <option value="">Escolha...</option>
+              <option value="Matosinhos">Matosinhos</option>
+              <option value="Guimarães">Guimarães</option>
+              <option value="Anadia">Anadia</option>
+              <option value="Bragança">Bragança</option>
+              <option value="Valongo">Valongo</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -149,21 +141,30 @@
     </div>
   </div>
   
-  <script>
-/**
- * Section: associar-peritos.html
- */
+<script>
 function carregarPeritosParaAssociacao() {
   const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+
+  const filtroTipo = document.getElementById('filtroTipo').value.toLowerCase();
+  const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
+  const filtroLocalidade = document.getElementById('filtroLocalidade').value.toLowerCase();
+
   const corpoTabela = document.getElementById('corpoTabela');
   corpoTabela.innerHTML = '';
 
-  peritos.forEach(perito => {
+  const peritosFiltrados = peritos.filter(perito => {
+    const tipoMatch = !filtroTipo || (perito.especialidade && perito.especialidade.toLowerCase().includes(filtroTipo));
+    const nomeMatch = !filtroNome || (perito.nome && perito.nome.toLowerCase().includes(filtroNome));
+    const localidadeMatch = !filtroLocalidade || (perito.morada && perito.morada.toLowerCase().includes(filtroLocalidade));
+    return tipoMatch && nomeMatch && localidadeMatch;
+  });
+
+  peritosFiltrados.forEach(perito => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
         <div class="perfil">
-          <img src="https://via.placeholder.com/40" alt="${perito.nome}">
+          <img src="${perito.foto || 'https://via.placeholder.com/40'}" alt="${perito.nome}">
           <div>
             <strong>${perito.nome}</strong><br>
             <span>Especialidade: ${perito.especialidade}</span><br>
@@ -182,9 +183,15 @@ function associar(nome) {
   alert(`Perito ${nome} associado com sucesso!`);
 }
 
-// Carregar os peritos ao carregar a página
-window.onload = carregarPeritosParaAssociacao;
-  </script>
+// Atualiza tabela sempre que filtros mudam
+window.onload = function () {
+  carregarPeritosParaAssociacao();
+
+  document.getElementById('filtroTipo').addEventListener('change', carregarPeritosParaAssociacao);
+  document.getElementById('filtroNome').addEventListener('input', carregarPeritosParaAssociacao);
+  document.getElementById('filtroLocalidade').addEventListener('input', carregarPeritosParaAssociacao);
+};
+</script>
 
 </body>
 </html>

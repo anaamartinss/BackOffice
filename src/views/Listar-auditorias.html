@@ -40,10 +40,17 @@
     <div class="flex-grow-1 p-4">
       <h1 class="text-success">Listar Auditorias</h1>
       <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
-      <div class="row mb-3">
+      <div class="row mb-3 align-items-end">
         <div class="col-md-6">
-          <label for="localidade" class="form-label">Localidade:</label>
-          <input type="text" id="localidade" class="form-control" placeholder="Digite a localidade" oninput="filtrarTabela()">
+          <label for="localidade">Localidade:</label>
+          <select id="localidade" class="form-select" onchange="filtrarTabela()">
+            <option value="">Escolha...</option>
+            <option value="Matosinhos">Matosinhos</option>
+            <option value="Guimarães">Guimarães</option>
+            <option value="Anadia">Anadia</option>
+            <option value="Bragança">Bragança</option>
+            <option value="Valongo">Valongo</option>
+          </select>
         </div>
         <div class="col-md-6">
           <label for="estado" class="form-label">Estado:</label>
