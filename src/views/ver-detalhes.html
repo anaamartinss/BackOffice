@@ -83,6 +83,12 @@
   </div>
 
   <script src="../js/main.js"></script>
+  <script>
+    const index = localStorage.getItem('detalheIndex');
+    const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    const ocorrencia = ocorrencias[index];
+    // Depois, preenche os campos com os dados da ocorrência
+  </script>
 
 </body>
 </html>

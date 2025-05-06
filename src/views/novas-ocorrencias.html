@@ -8,8 +8,49 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
-  
 </head>
+
+<!-- Offcanvas personalizado para os detalhes -->
+<style>
+  #detalhesOffcanvas {
+    position: fixed;
+    top: 0;
+    left: calc(250px + (100% - 250px) / 2); /* Começa a meio do espaço disponível */
+    width: calc((100% - 250px) / 2); /* Ocupa metade do espaço entre a sidebar e o fim da página */
+    height: 100%;
+    background-color: #fff;
+    z-index: 1050;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  #detalhesOffcanvas.show {
+    transform: translateX(0%);
+  }
+
+  #detalhesOffcanvas .offcanvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem;
+  }
+
+  #detalhesOffcanvas .btn-close {
+    margin-right: auto; /* Move o botão "X" para a esquerda */
+    margin-left: 0;
+  }
+
+  #iframeDetalhes {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+  }
+</style>
+
 <body>
   <div class="d-flex">
     <!-- Sidebar -->
@@ -63,6 +104,18 @@
     </div>
   </div>
 
+
+  <div id="detalhesOffcanvas">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close me-2" onclick="fecharOffcanvas()" aria-label="Fechar"></button>
+      <h5 class="offcanvas-title">Detalhes da Ocorrência</h5>
+    </div>
+    <div class="offcanvas-body p-0">
+      <iframe id="iframeDetalhes" src="" height="100%"></iframe>
+    </div>
+  </div>
+
+
   <!-- Bootstrap JS + nosso script -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -81,7 +134,7 @@
           <td>${o.estado || 'Pendente'}</td>
           <td class="text-center">
             <a href="associar-peritos.html" class="btn btn-sm btn-success btn-acao">Associar</a>
-            <a href="ver-detalhes.html" class="btn btn-sm btn-info btn-acao">Ver Detalhes</a>
+            <button class="btn btn-sm btn-info text-black btn-acao me-1" onclick="mostrarDetalhes(${index})">Ver Detalhes</button>
             <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${index})">Rejeitar</button>
           </td>`;
         tabela.appendChild(tr);
@@ -119,6 +172,29 @@
       ocorrencias.splice(index, 1); // Remove a ocorrência da lista
       localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
       carregarOcorrencias();
+    }
+
+    function mostrarDetalhes(index) {
+      localStorage.setItem('detalheIndex', index);
+
+      fetch('ver-detalhes.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('detalhesOffcanvasBody').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('detalhesOffcanvasBody').innerHTML = '<p class="text-danger">Erro ao carregar detalhes.</p>';
+          console.error('Erro ao carregar ver-detalhes.html:', error);
+        });
+    }
+
+    function mostrarDetalhes(index) {
+      document.getElementById('iframeDetalhes').src = 'ver-detalhes.html';
+      document.getElementById('detalhesOffcanvas').classList.add('show');
+    }
+
+    function fecharOffcanvas() {
+      document.getElementById('detalhesOffcanvas').classList.remove('show');
     }
 
     // Carregar as ocorrências ao abrir a página
