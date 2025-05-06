@@ -10,39 +10,21 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
+
+<style>  
+  .container-ocorrencia {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 2rem;
+  }
+</style>
+
 <body>
-
   <div class="d-flex">
-    <!-- Sidebar -->
-    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-      <h4 class="text-white">EyesEverywhere</h4>
-      <hr class="text-white">
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
-        </li>
-      </ul>
-      <hr class="text-white">
-      <p class="text-white">EyesEverywhere</p>
-    </nav>
-
-    
     <!-- Main Content -->
   <div class="d-flex flex-grow-1 justify-content-center align-items-center p-4">
-    <div class="bg-white p-4 rounded shadow-sm w-100" style="max-width: 800px;">
-      <h2 id="titulo-ocorrencia" class="text-success fw-bold text-center">Detalhes da Ocorrência</h2>
+    <div class="container-ocorrencia w-100" style="max-width: 800px;">
       <hr>
       <div class="mb-3">
         <label class="form-label text-danger fw-bold">Morada:</label>
@@ -50,6 +32,7 @@
           <div class="col-md-8">
             <input type="text" id="morada" class="form-control">
           </div>
+          <label class="form-label text-danger fw-bold">Código Postal:</label>
           <div class="col-md-4">
             <input type="text" id="codigo-postal" class="form-control">
           </div>
@@ -58,8 +41,14 @@
 
       <div class="mb-4">
         <label class="form-label text-danger fw-bold">Descrição:</label>
-        <input type="text" id="descricao" class="form-control">
-      </div>
+        <input type="text" id="descricao" class="form-control mb-3">
+        
+        <!-- Campo de upload logo abaixo -->
+        <div id="secao-upload">
+          <label class="form-label text-danger fw-bold">Anexar imagens:</label>
+          <input type="file" class="form-control" multiple>
+        </div>
+      </div>      
 
       <div id="secao-upload" class="mb-3 d-none">
         <label class="form-label text-danger fw-bold">Anexar imagens:</label>
@@ -88,6 +77,8 @@
     const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
     const ocorrencia = ocorrencias[index];
     // Depois, preenche os campos com os dados da ocorrência
+
+    document.getElementById("secao-upload").classList.remove("d-none");
   </script>
 
 </body>
