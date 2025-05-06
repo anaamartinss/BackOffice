@@ -12,11 +12,8 @@
 </head>
 
 <style>  
-  .container-ocorrencia {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    border-radius: 0.5rem;
-    background-color: white;
-    padding: 2rem;
+  .formcontrol {
+    background-color: #d4e8df;
   }
 </style>
 
@@ -30,30 +27,31 @@
         <label class="form-label text-danger fw-bold">Morada:</label>
         <div class="row g-2">
           <div class="col-md-8">
-            <input type="text" id="morada" class="form-control">
+            <input type="text" id="morada" class="form-control formcontrol">
           </div>
           <label class="form-label text-danger fw-bold">Código Postal:</label>
           <div class="col-md-4">
-            <input type="text" id="codigo-postal" class="form-control">
+            <input type="text" id="codigo-postal" class="form-control formcontrol">
           </div>
         </div>
       </div>
-
+      
       <div class="mb-4">
         <label class="form-label text-danger fw-bold">Descrição:</label>
-        <input type="text" id="descricao" class="form-control mb-3">
+        <input type="text" id="descricao" class="form-control formcontrol mb-3">
         
         <!-- Campo de upload logo abaixo -->
         <div id="secao-upload">
           <label class="form-label text-danger fw-bold">Anexar imagens:</label>
-          <input type="file" class="form-control" multiple>
+          <input type="file" class="form-control">
         </div>
       </div>      
-
+      
       <div id="secao-upload" class="mb-3 d-none">
         <label class="form-label text-danger fw-bold">Anexar imagens:</label>
-        <input type="file" class="form-control" multiple>
+        <input type="file" class="form-control">
       </div>
+      
 
       <div class="row d-none" id="imagens-existentes">
         <div class="col-md-4 p-2">

@@ -5,18 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Novas Ocorrências</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 
-<!-- Offcanvas personalizado para os detalhes -->
 <style>
-  #detalhesOffcanvas {
+  #detalhesOffcanvas, #associarOffcanvas {
     position: fixed;
     top: 0;
-    left: calc(250px + (100% - 250px) / 2); /* Começa a meio do espaço disponível */
-    width: calc((100% - 250px) / 2); /* Ocupa metade do espaço entre a sidebar e o fim da página */
+    left: calc(250px + (100% - 250px) / 2);
+    width: calc((100% - 250px) / 2);
     height: 100%;
     background-color: #fff;
     z-index: 1050;
@@ -27,11 +25,11 @@
     flex-direction: column;
   }
 
-  #detalhesOffcanvas.show {
+  #detalhesOffcanvas.show, #associarOffcanvas.show {
     transform: translateX(0%);
   }
 
-  #detalhesOffcanvas .offcanvas-header {
+  .offcanvas-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,12 +37,12 @@
     padding: 1rem;
   }
 
-  #detalhesOffcanvas .btn-close {
-    margin-right: auto; /* Move o botão "X" para a esquerda */
+  .offcanvas .btn-close {
+    margin-right: auto;
     margin-left: 0;
   }
 
-  #iframeDetalhes {
+  .offcanvas iframe {
     flex-grow: 1;
     border: none;
     width: 100%;
@@ -73,8 +71,6 @@
       <h1 class="text-success">Novas Ocorrências</h1>
       <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
       <div class="bg-white p-4 rounded shadow-sm mt-4">
-    
-
         <table class="table">
           <thead class="table-success">
             <tr>
@@ -104,22 +100,57 @@
     </div>
   </div>
 
-
-  <div id="detalhesOffcanvas">
+  <!-- Offcanvas Detalhes -->
+  <div id="detalhesOffcanvas" class="offcanvas">
     <div class="offcanvas-header">
-      <button type="button" class="btn-close me-2" onclick="fecharOffcanvas()" aria-label="Fechar"></button>
+      <button type="button" class="btn-close" onclick="fecharOffcanvas()" aria-label="Fechar"></button>
       <h5 class="offcanvas-title">Detalhes da Ocorrência</h5>
     </div>
-    <div class="offcanvas-body p-0">
-      <iframe id="iframeDetalhes" src="" height="100%"></iframe>
-    </div>
+    <iframe id="iframeDetalhes" src=""></iframe>
   </div>
 
+  <!-- Offcanvas Associar -->
+  <div id="associarOffcanvas" class="offcanvas">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" onclick="fecharOffcanvasAssociar()" aria-label="Fechar"></button>
+      <h5 class="offcanvas-title">Associar Perito</h5>
+    </div>
+    <iframe id="iframeAssociar" src=""></iframe>
+  </div>
 
-  <!-- Bootstrap JS + nosso script -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Função para carregar ocorrências do localStorage
+    const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+
+    function renderOcorrencias() {
+      const container = document.getElementById('ocorrencias');
+      container.innerHTML = '';
+
+      ocorrencias
+        .filter(oc => !oc.perito)
+        .forEach(oc => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <p><strong>${oc.descricao}</strong> em ${oc.local} - ${oc.data}</p>
+            <button onclick="associarPerito(${oc.id})">Associar</button>
+            <hr/>
+          `;
+          container.appendChild(div);
+        });
+    }
+
+    function associarPerito(id) {
+      const nomePerito = prompt('Introduza o nome do perito a associar:');
+      if (nomePerito) {
+        const ocorrencia = ocorrencias.find(oc => oc.id === id);
+        ocorrencia.perito = nomePerito;
+        localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+        renderOcorrencias();
+      }
+    }
+
+    renderOcorrencias();
+
     function carregarOcorrencias() {
       const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
       const tabela = document.getElementById('novas-ocorrencias-table');
@@ -133,14 +164,15 @@
           <td>${o.data || ''}</td>
           <td>${o.estado || 'Pendente'}</td>
           <td class="text-center">
-            <a href="associar-peritos.html" class="btn btn-sm btn-success btn-acao">Associar</a>
+            <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarAssociar(${index})">Associar</button>
             <button class="btn btn-sm btn-info text-black btn-acao me-1" onclick="mostrarDetalhes(${index})">Ver Detalhes</button>
             <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${index})">Rejeitar</button>
-          </td>`;
+          </td>
+        `;
         tabela.appendChild(tr);
       });
     }
-    // Função para adicionar uma nova ocorrência ao localStorage
+
     function adicionarLinha() {
       const nova = {
         local: document.getElementById('nova-localidade').value,
@@ -153,39 +185,15 @@
       ocorrencias.push(nova);
       localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
 
-      // Limpa os campos do formulário e recarrega a tabela
       ['nova-localidade', 'novo-tipo', 'nova-data', 'novo-estado'].forEach(id => document.getElementById(id).value = '');
       carregarOcorrencias();
     }
 
-    // Função para aprovar uma ocorrência
-    function aprovarOcorrencia(index) {
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-      ocorrencias[index].estado = 'Aprovada';
-      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
-      carregarOcorrencias();
-    }
-
-    // Função para rejeitar uma ocorrência
     function rejeitarOcorrencia(index) {
       const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-      ocorrencias.splice(index, 1); // Remove a ocorrência da lista
+      ocorrencias.splice(index, 1);
       localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
       carregarOcorrencias();
-    }
-
-    function mostrarDetalhes(index) {
-      localStorage.setItem('detalheIndex', index);
-
-      fetch('ver-detalhes.html')
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('detalhesOffcanvasBody').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('detalhesOffcanvasBody').innerHTML = '<p class="text-danger">Erro ao carregar detalhes.</p>';
-          console.error('Erro ao carregar ver-detalhes.html:', error);
-        });
     }
 
     function mostrarDetalhes(index) {
@@ -197,7 +205,16 @@
       document.getElementById('detalhesOffcanvas').classList.remove('show');
     }
 
-    // Carregar as ocorrências ao abrir a página
+    function mostrarAssociar(index) {
+      localStorage.setItem('ocorrenciaIndex', index); // opcional, se quiseres usar no iframe
+      document.getElementById('iframeAssociar').src = 'associar-peritos.html';
+      document.getElementById('associarOffcanvas').classList.add('show');
+    }
+
+    function fecharOffcanvasAssociar() {
+      document.getElementById('associarOffcanvas').classList.remove('show');
+    }
+
     document.addEventListener('DOMContentLoaded', carregarOcorrencias);
   </script>
 </body>

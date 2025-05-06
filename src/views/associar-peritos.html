@@ -12,7 +12,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #f2f2f2;
+      background-color: #ffffff;
     }
 
     .header {
@@ -73,25 +73,9 @@
 </head>
 <body>
   <div class="d-flex">
-    <!-- Sidebar -->
-    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-      <h4 class="text-white">EyesEverywhere</h4>
-      <hr class="text-white">
-      <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="registar-perito.html">Registar Perito</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a></li>
-      </ul>
-      <hr class="text-white">
-      <p class="text-white">EyesEverywhere</p>
-    </nav>
-
     <!-- Conteúdo principal -->
     <div class="flex-grow-1">
       <div class="header">
-        <h2>Associar Perito</h2>
         <div class="filters row g-3">
           <div class="col-md-4">
             <label class="form-label">Tipo de Ocorrência:</label>
@@ -173,15 +157,44 @@ function carregarPeritosParaAssociacao() {
         </div>
       </td>
       <td>Disponível</td>
-      <td><button class="btn-associar" onclick="associar('${perito.nome}')">Associar</button></td>
+      <button class="btn btn-primary" onclick="associarPerito()">Associar</button>
     `;
     corpoTabela.appendChild(tr);
   });
 }
 
-function associar(nome) {
-  alert(`Perito ${nome} associado com sucesso!`);
+function associarPerito() {
+  const peritoSelecionado = document.getElementById('perito-select').value;
+  if (!peritoSelecionado || ocorrenciaSelecionadaIndex === null) return;
+
+  const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+  const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
+
+  const ocorrencia = ocorrencias[ocorrenciaSelecionadaIndex];
+
+  // Criar auditoria com base na ocorrência + perito
+  auditorias.push({
+    localidade: ocorrencia.local,
+    tipo: ocorrencia.tipo_ocorrencia,
+    data: ocorrencia.data,
+    estado: "Em análise",
+    perito: peritoSelecionado
+  });
+
+  // Remover do array de ocorrências
+  ocorrencias.splice(ocorrenciaSelecionadaIndex, 1);
+
+  localStorage.setItem('auditorias', JSON.stringify(auditorias));
+  localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+
+  // Fechar o offcanvas e recarregar a lista
+  const offcanvasElement = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasAssociarPerito'));
+  offcanvasElement.hide();
+
+  ocorrenciaSelecionadaIndex = null;
+  carregarOcorrencias();
 }
+
 
 // Atualiza tabela sempre que filtros mudam
 window.onload = function () {
