@@ -125,86 +125,85 @@
     </div>
   </div>
   
-<script>
-function carregarPeritosParaAssociacao() {
-  const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+  <script>
+    function carregarPeritosParaAssociacao() {
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+    
+      const filtroTipo = document.getElementById('filtroTipo').value.toLowerCase();
+      const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
+      const filtroLocalidade = document.getElementById('filtroLocalidade').value.toLowerCase();
+    
+      const corpoTabela = document.getElementById('corpoTabela');
+      corpoTabela.innerHTML = '';
+    
+      const peritosFiltrados = peritos.filter(perito => {
+        const tipoMatch = !filtroTipo || (perito.especialidade && perito.especialidade.toLowerCase().includes(filtroTipo));
+        const nomeMatch = !filtroNome || (perito.nome && perito.nome.toLowerCase().includes(filtroNome));
+        const localidadeMatch = !filtroLocalidade || (perito.morada && perito.morada.toLowerCase().includes(filtroLocalidade));
+        return tipoMatch && nomeMatch && localidadeMatch;
+      });
+    
+      peritosFiltrados.forEach(perito => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div class="perfil">
+              <img src="${perito.foto || 'https://via.placeholder.com/40'}" alt="${perito.nome}">
+              <div>
+                <strong>${perito.nome}</strong><br>
+                <span>Especialidade: ${perito.especialidade}</span><br>
+                <span>Localidade: ${perito.morada}</span>
+              </div>
+            </div>
+          </td>
+          <td>Disponível</td>
+          <td>
+            <button class="btn btn-primary" onclick="associarPerito('${perito.nome}')">Associar</button>
+          </td>
+        `;
+        corpoTabela.appendChild(tr);
+      });
+    }
+    
+    // Corrigido: associar perito com nome passado como argumento
+    function associarPerito(nomePerito) {
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    
+      // Selecionar a primeira ocorrência ainda sem perito (ou adaptar conforme necessário)
+      const index = ocorrencias.findIndex(o => !o.perito);
+      if (index === -1) {
+        alert("Sem ocorrências disponíveis para associar.");
+        return;
+      }
+    
+      const ocorrencia = ocorrencias[index];
+    
+      // Atualizar a ocorrência com o perito
+      ocorrencia.perito = nomePerito;
+    
+      ocorrencias[index] = ocorrencia;
+      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+    
+      alert(`Perito "${nomePerito}" associado com sucesso à ocorrência "${ocorrencia.tipo_ocorrencia}" em ${ocorrencia.local}.`);
+    
+      carregarPeritosParaAssociacao();
 
-  const filtroTipo = document.getElementById('filtroTipo').value.toLowerCase();
-  const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
-  const filtroLocalidade = document.getElementById('filtroLocalidade').value.toLowerCase();
+      // Enviar a mensagem para o contexto da página que deve ser recarregada
+      window.opener.postMessage('refreshOcorrencias', '*');
 
-  const corpoTabela = document.getElementById('corpoTabela');
-  corpoTabela.innerHTML = '';
-
-  const peritosFiltrados = peritos.filter(perito => {
-    const tipoMatch = !filtroTipo || (perito.especialidade && perito.especialidade.toLowerCase().includes(filtroTipo));
-    const nomeMatch = !filtroNome || (perito.nome && perito.nome.toLowerCase().includes(filtroNome));
-    const localidadeMatch = !filtroLocalidade || (perito.morada && perito.morada.toLowerCase().includes(filtroLocalidade));
-    return tipoMatch && nomeMatch && localidadeMatch;
-  });
-
-  peritosFiltrados.forEach(perito => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>
-        <div class="perfil">
-          <img src="${perito.foto || 'https://via.placeholder.com/40'}" alt="${perito.nome}">
-          <div>
-            <strong>${perito.nome}</strong><br>
-            <span>Especialidade: ${perito.especialidade}</span><br>
-            <span>Localidade: ${perito.morada}</span>
-          </div>
-        </div>
-      </td>
-      <td>Disponível</td>
-      <button class="btn btn-primary" onclick="associarPerito()">Associar</button>
-    `;
-    corpoTabela.appendChild(tr);
-  });
-}
-
-function associarPerito() {
-  const peritoSelecionado = document.getElementById('perito-select').value;
-  if (!peritoSelecionado || ocorrenciaSelecionadaIndex === null) return;
-
-  const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-  const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
-
-  const ocorrencia = ocorrencias[ocorrenciaSelecionadaIndex];
-
-  // Criar auditoria com base na ocorrência + perito
-  auditorias.push({
-    localidade: ocorrencia.local,
-    tipo: ocorrencia.tipo_ocorrencia,
-    data: ocorrencia.data,
-    estado: "Em análise",
-    perito: peritoSelecionado
-  });
-
-  // Remover do array de ocorrências
-  ocorrencias.splice(ocorrenciaSelecionadaIndex, 1);
-
-  localStorage.setItem('auditorias', JSON.stringify(auditorias));
-  localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
-
-  // Fechar o offcanvas e recarregar a lista
-  const offcanvasElement = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasAssociarPerito'));
-  offcanvasElement.hide();
-
-  ocorrenciaSelecionadaIndex = null;
-  carregarOcorrencias();
-}
-
-
-// Atualiza tabela sempre que filtros mudam
-window.onload = function () {
-  carregarPeritosParaAssociacao();
-
-  document.getElementById('filtroTipo').addEventListener('change', carregarPeritosParaAssociacao);
-  document.getElementById('filtroNome').addEventListener('input', carregarPeritosParaAssociacao);
-  document.getElementById('filtroLocalidade').addEventListener('input', carregarPeritosParaAssociacao);
-};
-</script>
+      // Fechar o offcanvas
+      fecharOffcanvasAssociar();
+    }
+    
+    window.onload = function () {
+      carregarPeritosParaAssociacao();
+    
+      document.getElementById('filtroTipo').addEventListener('change', carregarPeritosParaAssociacao);
+      document.getElementById('filtroNome').addEventListener('input', carregarPeritosParaAssociacao);
+      document.getElementById('filtroLocalidade').addEventListener('input', carregarPeritosParaAssociacao);
+    };
+    </script>
+    
 
 </body>
 </html>
