@@ -58,7 +58,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <label for="mesSelect">Mês:</label>
           <div>
-            <select id="mesSelect" class="form-select d-inline w-auto" onchange="updateOcorrenciasChart()">
+            <select id="mesSelect" class="form-select d-inline" style="width: 100px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onchange="updateOcorrenciasChart()">
               <option value="all">Todos</option>
               <option value="0">Janeiro</option>
               <option value="1">Fevereiro</option>
@@ -67,7 +67,7 @@
               <option value="4">Maio</option>
               <option value="5">Junho</option>
             </select>
-            <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(ocorrenciasChart, 'ocorrencias')">Exportar</button>
+            <button class="btn btn-outline-secondary btn-sm ms-2" style="width: 80px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onclick="exportChart(ocorrenciasChart, 'ocorrencias')">Exportar</button>
           </div>
         </div>
         <canvas id="ocorrenciasChart" height="80"></canvas>
@@ -81,7 +81,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <label for="mesMaterialSelect">Mês:</label>
           <div>
-            <select id="mesMaterialSelect" class="form-select d-inline w-auto" onchange="updateMaterialChart()">
+            <select id="mesMaterialSelect" class="form-select d-inline" style="width: 100px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onchange="updateMaterialChart()">
               <option value="all">Todos</option>
               <option value="0">Janeiro</option>
               <option value="1">Fevereiro</option>
@@ -90,7 +90,7 @@
               <option value="4">Maio</option>
               <option value="5">Junho</option>
             </select>
-            <button class="btn btn-outline-secondary btn-sm ms-2" onclick="exportChart(materialChart, 'material')">Exportar</button>
+            <button class="btn btn-outline-secondary btn-sm ms-2" style="width: 80px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onclick="exportChart(materialChart, 'material')">Exportar</button>
           </div>
         </div>
         <canvas id="materialChart" height="80"></canvas>
