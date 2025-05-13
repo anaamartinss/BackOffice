@@ -377,7 +377,7 @@ function adicionarLinha() {
 
   if (localidade && tipo && data && estado) {
     // Recuperar ocorrências existentes do localStorage
-    const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
 
     // Criar uma nova ocorrência
     const novaOcorrencia = {
@@ -391,7 +391,7 @@ function adicionarLinha() {
     ocorrencias.push(novaOcorrencia);
 
     // Salvar a lista atualizada no localStorage
-    localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+    localStorage.setItem('reports', JSON.stringify(ocorrencias));
 
     // Atualizar a tabela na interface
     const tabela = document.getElementById('novas-ocorrencias-table');
@@ -425,9 +425,9 @@ function removerLinha(botao) {
   const index = Array.from(tabela.rows).indexOf(linha);
 
   // Remover a ocorrência do localStorage
-  const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+  const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
   ocorrencias.splice(index, 1);
-  localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+  localStorage.setItem('reports', JSON.stringify(ocorrencias));
 
   // Remover a linha da tabela
   linha.remove();
@@ -437,6 +437,7 @@ function verDetalhes(isNova) {
   const url = `ver-detalhes.html?nova=${isNova ? '1' : '0'}`;
   window.location.href = url;
 }
+
 
 /**
  * Section: listar-auditorias.html
@@ -584,7 +585,7 @@ window.onload = carregarPeritos;
 
 // Função para carregar as ocorrências do localStorage e exibi-las na tabela
 function carregarOcorrencias() {
-  const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+  const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
   const tabela = document.getElementById('novas-ocorrencias-table');
   tabela.innerHTML = ''; // Limpar a tabela antes de carregar os dados
 

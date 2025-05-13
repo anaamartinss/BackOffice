@@ -83,6 +83,7 @@
           </thead>
           <tbody id="novas-ocorrencias-table">
             <!-- As ocorrências serão carregadas aqui -->
+             
           </tbody>
           <tfoot>
             <tr>
@@ -122,12 +123,12 @@
   <script>
     // Função para carregar as ocorrências
     function carregarOcorrencias() {
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
       const tabela = document.getElementById('novas-ocorrencias-table');
       tabela.innerHTML = '';
   
       // Filtrar ocorrências sem perito associado
-      const ocorrenciasSemPerito = ocorrencias.filter(o => !o.perito);
+      const ocorrenciasSemPerito = reports.filter(o => !o.perito);
   
       // Adicionar as ocorrências sem perito à tabela
       ocorrenciasSemPerito.forEach((o, index) => {
@@ -148,7 +149,7 @@
     }
   
     function adicionarLinha() {
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
   
       const nova = {
         id: Date.now(), // Gerar um ID único
@@ -159,8 +160,8 @@
         perito: null // A nova ocorrência começa sem perito associado
       };
   
-      ocorrencias.push(nova);
-      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+      reports.push(nova);
+      localStorage.setItem('reports', JSON.stringify(reports));
   
       // Limpar os campos de input
       ['nova-localidade', 'novo-tipo', 'nova-data', 'novo-estado'].forEach(id => document.getElementById(id).value = '');
@@ -168,9 +169,9 @@
     }
   
     function rejeitarOcorrencia(index) {
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-      ocorrencias.splice(index, 1); // Remover a ocorrência rejeitada
-      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      reports.splice(index, 1); // Remover a ocorrência rejeitada
+      localStorage.setItem('reports', JSON.stringify(reports));
   
       // Recarregar a tabela
       carregarOcorrencias();

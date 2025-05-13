@@ -139,8 +139,8 @@
   <script> 
     document.addEventListener('DOMContentLoaded', function () {
       // ⚠️ Carregar auditorias (ocorrências com perito) no início
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-      const associadas = ocorrencias.filter(oc => oc.perito);
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      const associadas = reports.filter(oc => oc.perito);
   
       const tabela = document.getElementById('auditorias-table');
       tabela.innerHTML = '';
