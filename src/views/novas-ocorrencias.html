@@ -178,6 +178,7 @@
     }
   
     function mostrarDetalhes(index) {
+      localStorage.setItem('detalheIndex', index);
       document.getElementById('iframeDetalhes').src = 'ver-detalhes.html'; // Ajustar para o caminho correto
       document.getElementById('detalhesOffcanvas').classList.add('show');
     }

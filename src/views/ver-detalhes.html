@@ -71,12 +71,21 @@
 
   <script src="../js/main.js"></script>
   <script>
-    const index = localStorage.getItem('detalheIndex');
-    const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-    const ocorrencia = ocorrencias[index];
-    // Depois, preenche os campos com os dados da ocorrência
+    document.addEventListener('DOMContentLoaded', () => {
+      const index = localStorage.getItem('detalheIndex');
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      const ocorrencia = reports[index];
 
-    document.getElementById("secao-upload").classList.remove("d-none");
+      if (ocorrencia) {
+        // Preencher os campos com os dados da ocorrência
+        document.getElementById('morada').value = ocorrencia.local || '';
+        document.getElementById('descricao').value = ocorrencia.tipo_ocorrencia || '';
+        // Exemplo fictício: o código postal pode estar embutido em `local`, separar se necessário
+        document.getElementById('codigo-postal').value = ocorrencia.codigo_postal || '';
+      }
+
+      document.getElementById("secao-upload").classList.remove("d-none");
+    });
   </script>
 
 </body>
