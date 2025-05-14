@@ -39,13 +39,17 @@
       <div class="mb-4">
         <label class="form-label text-danger fw-bold">Descrição:</label>
         <input type="text" id="descricao" class="form-control formcontrol mb-3">
-        
-        <!-- Campo de upload logo abaixo -->
+
+        <!-- Upload de imagens -->
         <div id="secao-upload">
           <label class="form-label text-danger fw-bold">Anexar imagens:</label>
-          <input type="file" class="form-control">
+          <input type="file" id="input-imagens" class="form-control" multiple accept="image/*">
         </div>
-      </div>      
+
+        <!-- Previsão das imagens carregadas -->
+        <div id="preview-imagens" class="row mt-3"></div>
+      </div>
+            
       
       <div id="secao-upload" class="mb-3 d-none">
         <label class="form-label text-danger fw-bold">Anexar imagens:</label>
@@ -76,15 +80,72 @@
       const reports = JSON.parse(localStorage.getItem('reports')) || [];
       const ocorrencia = reports[index];
 
-      if (ocorrencia) {
-        // Preencher os campos com os dados da ocorrência
-        document.getElementById('morada').value = ocorrencia.local || '';
-        document.getElementById('descricao').value = ocorrencia.tipo_ocorrencia || '';
-        // Exemplo fictício: o código postal pode estar embutido em `local`, separar se necessário
-        document.getElementById('codigo-postal').value = ocorrencia.codigo_postal || '';
+      if (!ocorrencia) return;
+
+      // Preencher campos
+      document.getElementById('morada').value = ocorrencia.local || '';
+      document.getElementById('descricao').value = ocorrencia.tipo_ocorrencia || '';
+      document.getElementById('codigo-postal').value = ocorrencia.codigo_postal || '';
+
+      // Mostrar imagens existentes
+      const previewContainer = document.getElementById('preview-imagens');
+      if (ocorrencia.imagens && ocorrencia.imagens.length > 0) {
+        ocorrencia.imagens.forEach(imgSrc => {
+          const col = document.createElement('div');
+          col.className = 'col-md-4 p-2';
+          col.innerHTML = `<img src="${imgSrc}" alt="Imagem Ocorrência" class="img-fluid rounded">`;
+          previewContainer.appendChild(col);
+        });
       }
 
+      // Mostrar secção de upload
       document.getElementById("secao-upload").classList.remove("d-none");
+
+      // Pré-visualizar novas imagens ao selecionar
+      document.getElementById('input-imagens').addEventListener('change', function () {
+        const files = Array.from(this.files);
+        previewContainer.innerHTML = ''; // limpar previews antigos
+
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 p-2';
+            col.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded">`;
+            previewContainer.appendChild(col);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // Lógica do botão "Guardar"
+      document.getElementById('guardarBtn').addEventListener('click', () => {
+        // Atualizar campos
+        ocorrencia.local = document.getElementById('morada').value;
+        ocorrencia.tipo_ocorrencia = document.getElementById('descricao').value;
+        ocorrencia.codigo_postal = document.getElementById('codigo-postal').value;
+
+        // Guardar imagens novas
+        const files = document.getElementById('input-imagens').files;
+        const imagens = [];
+
+        const readerPromises = Array.from(files).map(file => {
+          return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(file);
+          });
+        });
+
+        Promise.all(readerPromises).then(resultados => {
+          imagens.push(...resultados);
+          ocorrencia.imagens = imagens.length > 0 ? imagens : ocorrencia.imagens; // só substitui se houver novas
+
+          reports[index] = ocorrencia;
+          localStorage.setItem('reports', JSON.stringify(reports));
+          alert('Ocorrência atualizada com sucesso!');
+        });
+      });
     });
   </script>
 
