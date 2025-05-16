@@ -84,13 +84,14 @@
 
       // Preencher campos
       document.getElementById('morada').value = ocorrencia.local || '';
-      document.getElementById('descricao').value = ocorrencia.tipo_ocorrencia || '';
+      document.getElementById('descricao').value = ocorrencia.descricao_ocorrencia || '';
       document.getElementById('codigo-postal').value = ocorrencia.codigo_postal || '';
 
       // Mostrar imagens existentes
       const previewContainer = document.getElementById('preview-imagens');
-      if (ocorrencia.imagens && ocorrencia.imagens.length > 0) {
-        ocorrencia.imagens.forEach(imgSrc => {
+      const imagens = Array.isArray(ocorrencia.imagens) ? ocorrencia.imagens : [];
+      if (imagens.length > 0) {
+        imagens.forEach(imgSrc => {
           const col = document.createElement('div');
           col.className = 'col-md-4 p-2';
           col.innerHTML = `<img src="${imgSrc}" alt="Imagem Ocorrência" class="img-fluid rounded">`;
@@ -122,7 +123,7 @@
       document.getElementById('guardarBtn').addEventListener('click', () => {
         // Atualizar campos
         ocorrencia.local = document.getElementById('morada').value;
-        ocorrencia.tipo_ocorrencia = document.getElementById('descricao').value;
+        ocorrencia.descricao_ocorrencia = document.getElementById('descricao').value;
         ocorrencia.codigo_postal = document.getElementById('codigo-postal').value;
 
         // Guardar imagens novas
