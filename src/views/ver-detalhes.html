@@ -33,41 +33,23 @@
           <div class="col-md-4">
             <input type="text" id="codigo-postal" class="form-control formcontrol">
           </div>
+          <div>
+            <label class="form-label text-danger fw-bold">Descrição:</label>
+            <input type="text" id="descricao" class="form-control formcontrol mb-3">
+            <label class="form-label text-danger fw-bold">Imagens Anexadas:</label>
+          </div>
         </div>
       </div>
       
       <div class="mb-4">
-        <label class="form-label text-danger fw-bold">Descrição:</label>
-        <input type="text" id="descricao" class="form-control formcontrol mb-3">
+        
 
-        <!-- Upload de imagens -->
-        <div id="secao-upload">
-          <label class="form-label text-danger fw-bold">Anexar imagens:</label>
-          <input type="file" id="input-imagens" class="form-control" multiple accept="image/*">
-        </div>
+       
 
         <!-- Previsão das imagens carregadas -->
         <div id="preview-imagens" class="row mt-3"></div>
       </div>
-            
-      
-      <div id="secao-upload" class="mb-3 d-none">
-        <label class="form-label text-danger fw-bold">Anexar imagens:</label>
-        <input type="file" class="form-control">
-      </div>
-      
 
-      <div class="row d-none" id="imagens-existentes">
-        <div class="col-md-4 p-2">
-          <img src="https://i.imgur.com/p1szm0S.jpg" alt="poste1" class="img-fluid rounded">
-        </div>
-        <div class="col-md-4 p-2">
-          <img src="https://i.imgur.com/Gv0FMLj.jpg" alt="poste2" class="img-fluid rounded">
-        </div>
-        <div class="col-md-4 p-2">
-          <img src="https://i.imgur.com/nWrVkCV.jpg" alt="poste3" class="img-fluid rounded">
-        </div>
-      </div>
       <!-- Botão de guardar -->
       <button id="guardarBtn" class="btn btn-success w-100">Guardar</button>
     </div>
