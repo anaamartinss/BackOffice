@@ -81,21 +81,7 @@
               <th class="text-center">Ações</th>
             </tr>
           </thead>
-          <tbody id="novas-ocorrencias-table">
-            <!-- As ocorrências serão carregadas aqui -->
-             
-          </tbody>
-          <tfoot>
-            <tr>
-              <td><input type="text" id="nova-localidade" class="form-control form-control-sm" placeholder="Localidade"></td>
-              <td><input type="text" id="novo-tipo" class="form-control form-control-sm" placeholder="Tipo"></td>
-              <td><input type="date" id="nova-data" class="form-control form-control-sm"></td>
-              <td><input type="text" id="novo-estado" class="form-control form-control-sm" placeholder="Estado"></td>
-              <td>
-                <button type="button" class="btn btn-primary btn-sm btn-acao" onclick="adicionarLinha()">Adicionar</button>
-              </td>
-            </tr>
-          </tfoot>
+          <tbody id="novas-ocorrencias-table"></tbody>
         </table>
       </div>
     </div>
@@ -121,83 +107,75 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Função para carregar as ocorrências
     function carregarOcorrencias() {
       const reports = JSON.parse(localStorage.getItem('reports')) || [];
       const tabela = document.getElementById('novas-ocorrencias-table');
       tabela.innerHTML = '';
-  
-      // Filtrar ocorrências sem perito associado
-      const ocorrenciasSemPerito = reports.filter(o => !o.perito);
-  
-      // Adicionar as ocorrências sem perito à tabela
-      ocorrenciasSemPerito.forEach((o, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${o.local}</td>
-          <td>${o.tipo_ocorrencia}</td>
-          <td>${o.data || ''}</td>
-          <td>${o.estado || 'Pendente'}</td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarAssociar(${index})">Associar</button>
-            <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarDetalhes(${index})">Ver Detalhes</button>
-            <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${index})">Rejeitar</button>
-          </td>
-        `;
-        tabela.appendChild(tr);
+
+      // Só mostra as que ainda não têm perito
+      reports.forEach((o, idx) => {
+        if (!o.perito) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${o.local || o.localidade || ''}</td>
+            <td>${o.tipo_ocorrencia || o.tipo || ''}</td>
+            <td>${o.data || ''}</td>
+            <td>${o.estado || 'Pendente'}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarAssociar(${idx})">Associar</button>
+              <button class="btn btn-sm btn-info btn-acao me-1" onclick="mostrarDetalhes(${idx})">Ver Detalhes</button>
+              <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${idx})">Rejeitar</button>
+            </td>
+          `;
+          tabela.appendChild(tr);
+        }
       });
     }
-  
+
     function adicionarLinha() {
       const reports = JSON.parse(localStorage.getItem('reports')) || [];
-  
       const nova = {
-        id: Date.now(), // Gerar um ID único
+        id: Date.now(),
         local: document.getElementById('nova-localidade').value,
         tipo_ocorrencia: document.getElementById('novo-tipo').value,
         data: document.getElementById('nova-data').value,
         estado: document.getElementById('novo-estado').value || 'Pendente',
-        perito: null // A nova ocorrência começa sem perito associado
+        perito: null
       };
-  
       reports.push(nova);
       localStorage.setItem('reports', JSON.stringify(reports));
-  
-      // Limpar os campos de input
       ['nova-localidade', 'novo-tipo', 'nova-data', 'novo-estado'].forEach(id => document.getElementById(id).value = '');
-      carregarOcorrencias(); // Recarregar a lista de ocorrências
-    }
-  
-    function rejeitarOcorrencia(index) {
-      const reports = JSON.parse(localStorage.getItem('reports')) || [];
-      reports.splice(index, 1); // Remover a ocorrência rejeitada
-      localStorage.setItem('reports', JSON.stringify(reports));
-  
-      // Recarregar a tabela
       carregarOcorrencias();
     }
-  
-    function mostrarDetalhes(index) {
-      localStorage.setItem('detalheIndex', index);
-      document.getElementById('iframeDetalhes').src = 'ver-detalhes.html'; // Ajustar para o caminho correto
+
+    function rejeitarOcorrencia(idx) {
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      reports.splice(idx, 1);
+      localStorage.setItem('reports', JSON.stringify(reports));
+      carregarOcorrencias();
+    }
+
+    function mostrarDetalhes(idx) {
+      localStorage.setItem('detalheIndex', idx);
+      document.getElementById('iframeDetalhes').src = 'ver-detalhes.html';
       document.getElementById('detalhesOffcanvas').classList.add('show');
     }
-  
+
     function fecharOffcanvas() {
       document.getElementById('detalhesOffcanvas').classList.remove('show');
     }
-  
-    function mostrarAssociar(index) {
-      localStorage.setItem('ocorrenciaIndex', index); // Salvar o índice da ocorrência
-      document.getElementById('iframeAssociar').src = 'associar-peritos.html'; // Ajustar para o caminho correto
+
+    function mostrarAssociar(idx) {
+      localStorage.setItem('ocorrenciaIndex', idx);
+      document.getElementById('iframeAssociar').src = 'associar-peritos.html';
       document.getElementById('associarOffcanvas').classList.add('show');
     }
-  
+
     function fecharOffcanvasAssociar() {
       document.getElementById('associarOffcanvas').classList.remove('show');
     }
-  
-    document.addEventListener('DOMContentLoaded', carregarOcorrencias); // Chama a função ao carregar a página
+
+    document.addEventListener('DOMContentLoaded', carregarOcorrencias);
   </script>
   
 </body>
