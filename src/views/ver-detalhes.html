@@ -65,7 +65,7 @@
       if (!ocorrencia) return;
 
       // Preencher campos
-      document.getElementById('morada').value = ocorrencia.local || '';
+      document.getElementById('morada').value = ocorrencia.morada || '';
       document.getElementById('descricao').value = ocorrencia.descricao_ocorrencia || '';
       document.getElementById('codigo-postal').value = ocorrencia.codigo_postal || '';
 
@@ -104,7 +104,7 @@
       // Lógica do botão "Guardar"
       document.getElementById('guardarBtn').addEventListener('click', () => {
         // Atualizar campos
-        ocorrencia.local = document.getElementById('morada').value;
+        ocorrencia.morada = document.getElementById('morada').value;
         ocorrencia.descricao_ocorrencia = document.getElementById('descricao').value;
         ocorrencia.codigo_postal = document.getElementById('codigo-postal').value;
 
