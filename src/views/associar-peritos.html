@@ -166,7 +166,6 @@
     }
     
     // Corrigido: associar perito com email
-    // passado como argumento
     function associarPerito(emailPerito) {
   const idx = parseInt(localStorage.getItem('ocorrenciaIndex'), 10);
   const reports = JSON.parse(localStorage.getItem('reports')) || [];
@@ -180,6 +179,7 @@
   // Guarda o nome e o email do perito na ocorrência
   reports[idx].perito = perito.nome;
   reports[idx].peritoEmail = perito.email;
+  reports[idx].estado = "Pendente";
   localStorage.setItem('reports', JSON.stringify(reports));
   alert(`Perito "${perito.nome}" associado com sucesso!`);
   window.close(); // ou fecha o offcanvas/modal conforme o teu fluxo
