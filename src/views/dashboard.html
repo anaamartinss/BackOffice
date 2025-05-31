@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/public/favicon.png" type="image/png">
+  <title>EyeEverywhere Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-success active" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Perito</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="Listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="flex-grow-1 p-4">
+      <!-- Botões de topo -->
+      <div class="bg-danger text-white p-3 rounded mb-4 d-flex justify-content-between align-items-center">
+        <a href="novas-ocorrencias.html" class="btn btn-danger text-white fw-bold">
+          <i class="bi bi-exclamation-circle"></i> Novas Ocorrências
+        </a>
+        <a href="Listar-auditorias.html" class="btn btn-danger text-white fw-bold">
+          <i class="bi bi-journal-check"></i> Auditorias (Concluídas/em análise)
+        </a>    
+      </div>
+      
+      <!-- Filtro de Região centralizado -->
+      <div class="row mb-3 justify-content-center">
+        <div class="col-auto">
+          <div class="d-flex align-items-center gap-2">
+            <label for="regiaoSelect" class="form-label fw-bold mb-0">Filtrar por Região:</label>
+            <select id="regiaoSelect" class="form-select w-auto" onchange="updateResumoOcorrencias()">
+              <option value="all">Todas</option>
+              <option value="0">Viana do Castelo</option>
+              <option value="1">Braga</option>
+              <option value="2">Porto</option>
+              <option value="3">Vila Real</option>
+              <option value="4">Bragança</option>
+              <option value="5">Aveiro</option>
+              <option value="6">Viseu</option>
+              <option value="7">Guarda</option>
+              <option value="8">Coimbra</option>
+              <option value="9">Castelo Branco</option>
+              <option value="10">Leiria</option>
+              <option value="11">Santarém</option>
+              <option value="12">Portalegre</option>
+              <option value="13">Lisboa</option>
+              <option value="14">Setúbal</option>
+              <option value="15">Évora</option>
+              <option value="16">Beja</option>
+              <option value="17">Faro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards centralizados -->
+      <div class="row mb-4 justify-content-center">
+        <div class="col-lg-5 col-md-6 mb-2">
+          <div id="cardRecebidas" class="border rounded p-4 bg-light d-flex align-items-center justify-content-between h-100">
+            <div>
+              <h6 class="text-muted mb-1 text-nowrap">Ocorrências Recebidas</h6>
+              <p class="display-6 fw-bold mb-0" id="ocorrenciasRecebidas">-</p>
+            </div>
+            <i class="bi bi-inbox-fill" id="iconRecebidas" style="font-size: 2.5rem;"></i>
+          </div>
+        </div>
+        <div class="col-lg-5 col-md-6 mb-2">
+          <div id="cardResolvidas" class="border rounded p-4 bg-light d-flex align-items-center justify-content-between h-100">
+            <div>
+              <h6 class="text-muted mb-1 text-nowrap">Ocorrências Resolvidas</h6>
+              <p class="display-6 fw-bold mb-0" id="ocorrenciasResolvidas">-</p>
+            </div>
+            <i class="bi bi-check-circle-fill" id="iconResolvidas" style="font-size: 2.5rem;"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRÁFICOS -->
+      <div class="row align-items-center" style="min-height: calc(5vh - 150px);">
+        <!-- Gráficos à esquerda -->
+        <div class="col-md-6">
+          <!-- Ocorrências -->
+          <div class="bg-white p-4 rounded shadow-sm mb-2" style="min-height:350px;">
+            <h5 class="text-success mb-3">Número de ocorrências</h5>
+            <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+              <div>
+                <label for="mesSelect" class="me-1">Mês:</label>
+                <select id="mesSelect" class="form-select d-inline" style="width: 100px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onchange="updateOcorrenciasChart()">
+                  <option value="all">Todos</option>
+                  <option value="0">Janeiro</option>
+                  <option value="1">Fevereiro</option>
+                  <option value="2">Março</option>
+                  <option value="3">Abril</option>
+                  <option value="4">Maio</option>
+                  <option value="5">Junho</option>
+                </select>
+              </div>
+              <div>
+                <label for="tipoSelect" class="me-1">Tipo:</label>
+                <select id="tipoSelect" class="form-select d-inline" style="width: 150px; padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                  <option value="all">Todos</option>
+                  <!-- Opções dinâmicas via JS -->
+                </select>
+              </div>
+              <button class="btn btn-outline-secondary btn-sm ms-2" style="width: 80px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onclick="exportChart(ocorrenciasChart, 'ocorrencias')">Exportar</button>
+            </div>
+            <canvas id="ocorrenciasChart" height="180"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <!-- Material Utilizado -->
+          <div class="bg-white p-4 rounded shadow-sm mb-2" style="min-height:350px;">
+            <h5 class="text-success mb-3">Material Utilizado</h5>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label for="mesMaterialSelect">Mês:</label>
+              <div class="d-flex align-items-center gap-2">
+                <select id="mesMaterialSelect" class="form-select d-inline" style="width: 100px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onchange="updateMaterialChart()">
+                  <option value="all">Todos</option>
+                  <option value="0">Janeiro</option>
+                  <option value="1">Fevereiro</option>
+                  <option value="2">Março</option>
+                  <option value="3">Abril</option>
+                  <option value="4">Maio</option>
+                  <option value="5">Junho</option>
+                </select>
+                <!-- NOVO FILTRO DE MATERIAL -->
+                <select id="materialSelect" class="form-select d-inline" style="width: 150px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onchange="updateMaterialChart()">
+                  <option value="all">Todos</option>
+                  <!-- Opções dinâmicas via JS -->
+                </select>
+                <button class="btn btn-outline-secondary btn-sm ms-2" style="width: 80px; padding: 0.25rem 0.5rem; font-size: 0.875rem;" onclick="exportChart(materialChart, 'material')">Exportar</button>
+              </div>
+            </div>
+            <canvas id="materialChart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+
+     
+    </div>
+
+  
+
+  
+
+  <!-- Scripts dos Gráficos -->
+  <script>
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+    const regioes = ['Porto', 'Lisboa', 'Braga', 'Aveiro', 'Alentejo', 'Algarve', 'Madeira'];
+
+    function getOcorrenciasDataFromLocalStorage() {
+  const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+  const reports = JSON.parse(localStorage.getItem('reports')) || [];
+
+  // Descobre todos os tipos de ocorrência existentes
+  const tiposSet = new Set();
+  reports.forEach(ocorrencia => {
+    const tipo = ocorrencia.tipo_ocorrencia || ocorrencia.tipo;
+    if (tipo) tiposSet.add(tipo);
+  });
+  const tipos = Array.from(tiposSet);
+
+  // Inicializa estrutura: ocorrenciasPorTipo[tipo][mes] = quantidade
+  const ocorrenciasPorTipo = {};
+  tipos.forEach(tipo => {
+    ocorrenciasPorTipo[tipo] = Array(meses.length).fill(0);
+  });
+
+  reports.forEach(ocorrencia => {
+    const tipo = ocorrencia.tipo_ocorrencia || ocorrencia.tipo;
+    const dataStr = ocorrencia.data_submissao || ocorrencia.data || ocorrencia.data_ocorrencia;
+    if (!tipo || !dataStr) return;
+    const data = new Date(dataStr);
+    const mes = data.getMonth();
+    if (isNaN(mes) || mes < 0 || mes >= meses.length) return;
+    ocorrenciasPorTipo[tipo][mes]++;
+  });
+
+  // Prepara datasets para Chart.js
+  const pastelColors = [
+  '#A5D8FF', // azul pastel
+  '#B9FBC0', // verde pastel
+  '#FFD6A5', // laranja pastel
+  '#FFADAD', // vermelho pastel
+  '#CAFFBF', // verde claro pastel
+  '#FDFFB6', // amarelo pastel
+  '#BDB2FF', // roxo pastel
+  '#FFC6FF', // rosa pastel
+  '#FFFFFC'  // branco quase pastel
+];
+const datasets = tipos.map((tipo, i) => ({
+  label: tipo,
+  data: ocorrenciasPorTipo[tipo],
+  backgroundColor: pastelColors[i % pastelColors.length]
+}));
+
+return {
+  labels: meses,
+  datasets
+};
+}
+
+    const ocorrenciasChart = new Chart(document.getElementById('ocorrenciasChart'), {
+      type: 'bar',
+      data: getOcorrenciasDataFromLocalStorage(),
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'Número de ocorrências por mês' } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0,
+              callback: function(value) {
+                return Number.isInteger(value) ? value : null;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    function updateOcorrenciasChart() {
+  const mesIndex = document.getElementById("mesSelect").value;
+  const tipoSelecionado = document.getElementById("tipoSelect").value;
+  const data = getOcorrenciasDataFromLocalStorage();
+
+  // Filtra por tipo
+  let datasets = data.datasets;
+  if (tipoSelecionado !== "all") {
+    datasets = data.datasets.filter(ds => ds.label === tipoSelecionado);
+  }
+
+  // Filtra por mês
+  let labels = data.labels;
+  if (mesIndex !== "all") {
+    labels = [data.labels[mesIndex]];
+    datasets = datasets.map(ds => ({
+      ...ds,
+      data: [ds.data[mesIndex]]
+    }));
+  }
+
+  ocorrenciasChart.data = { labels, datasets };
+  ocorrenciasChart.update();
+}
+
+    function getMaterialDataFromLocalStorage() {
+  const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
+  const reports = JSON.parse(localStorage.getItem('reports')) || [];
+
+  // Descobre todos os nomes de materiais automaticamente
+  const materiaisSet = new Set();
+  reports.forEach(auditoria => {
+    if (Array.isArray(auditoria.materiais)) {
+      auditoria.materiais.forEach(mat => {
+        const nome = (typeof mat === 'object' && mat.name) ? mat.name : mat;
+        if (nome) materiaisSet.add(nome);
+      });
+    } else if (typeof auditoria.materiais === 'string') {
+      materiaisSet.add(auditoria.materiais);
+    }
+  });
+  const materiais = Array.from(materiaisSet);
+
+  // Inicializa estrutura: materiaisPorMes[material][mes] = quantidade
+  const materiaisPorMes = {};
+  materiais.forEach(mat => {
+    materiaisPorMes[mat] = Array(meses.length).fill(0);
+  });
+
+  reports.forEach(auditoria => {
+    const dataStr = auditoria.data_submissao || auditoria.data || auditoria.data_ocorrencia;
+    if (!dataStr) return;
+    const data = new Date(dataStr);
+    const mes = data.getMonth();
+    if (isNaN(mes) || mes < 0 || mes >= meses.length) return;
+
+    if (Array.isArray(auditoria.materiais)) {
+      auditoria.materiais.forEach(mat => {
+        const nome = (typeof mat === 'object' && mat.name) ? mat.name : mat;
+        const qtd = (typeof mat === 'object' && mat.qty) ? Number(mat.qty) : 1;
+        if (materiaisPorMes[nome] && !isNaN(qtd)) materiaisPorMes[nome][mes] += qtd;
+      });
+    } else if (typeof auditoria.materiais === 'string') {
+      if (materiaisPorMes[auditoria.materiais]) materiaisPorMes[auditoria.materiais][mes]++;
+    }
+  });
+
+  // Cores pastel para os materiais (expande se necessário)
+  const pastelColors = [
+    '#A5D8FF', '#FFD6A5', '#B9FBC0', '#FFADAD', '#CAFFBF', '#FDFFB6', '#BDB2FF', '#FFC6FF', '#FFFFFC'
+  ];
+
+  const datasets = materiais.map((mat, i) => ({
+    label: mat,
+    data: materiaisPorMes[mat],
+    backgroundColor: pastelColors[i % pastelColors.length]
+  }));
+
+  return {
+    labels: meses,
+    datasets
+  };
+}
+
+// Criação do gráfico dos materiais
+const materialChart = new Chart(document.getElementById('materialChart'), {
+  type: 'bar',
+  data: getMaterialDataFromLocalStorage(),
+  options: {
+    responsive: true,
+    plugins: { title: { display: true, text: 'Material Utilizado por mês' } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+          callback: function(value) {
+            return Number.isInteger(value) ? value : null;
+          }
+        }
+      }
+    }
+  }
+});
+
+function updateMaterialChart() {
+  const mesIndex = document.getElementById("mesMaterialSelect").value;
+  const materialSelecionado = document.getElementById("materialSelect").value;
+  const data = getMaterialDataFromLocalStorage();
+
+  let datasets = data.datasets;
+  if (materialSelecionado !== "all") {
+    datasets = data.datasets.filter(ds => ds.label === materialSelecionado);
+  }
+
+  let labels = data.labels;
+  if (mesIndex !== "all") {
+    labels = [data.labels[mesIndex]];
+    datasets = datasets.map(ds => ({
+      ...ds,
+      data: [ds.data[mesIndex]]
+    }));
+  }
+
+  materialChart.data = { labels, datasets };
+  materialChart.update();
+}
+    
+
+function updateResumoOcorrencias() {
+  const select = document.getElementById('regiaoSelect');
+  const index = select.value;
+
+  const recebidasEl = document.getElementById('ocorrenciasRecebidas');
+  const resolvidasEl = document.getElementById('ocorrenciasResolvidas');
+
+  const cardRecebidas = document.getElementById('cardRecebidas');
+  const cardResolvidas = document.getElementById('cardResolvidas');
+
+  const iconRecebidas = document.getElementById('iconRecebidas');
+  const iconResolvidas = document.getElementById('iconResolvidas');
+
+  // Lê as ocorrências do localStorage
+  const reports = JSON.parse(localStorage.getItem('reports')) || [];
+
+  // Array de nomes dos distritos (ordem igual ao select)
+  const distritos = [
+    "Viana do Castelo", "Braga", "Porto", "Vila Real", "Bragança", "Aveiro", "Viseu", "Guarda",
+    "Coimbra", "Castelo Branco", "Leiria", "Santarém", "Portalegre", "Lisboa", "Setúbal",
+    "Évora", "Beja", "Faro"
+  ];
+
+  let recebidas = 0;
+  let resolvidas = 0;
+
+  if (index === "all") {
+    recebidas = reports.length;
+    resolvidas = reports.filter(r => (r.estado && r.estado.toLowerCase() === "concluída") || (r.estado && r.estado.toLowerCase() === "concluida")).length;
+  } else {
+    const distrito = distritos[index];
+    const reportsDistrito = reports.filter(r => (r.distrito || r.regiao || r.localidade) === distrito);
+    recebidas = reportsDistrito.length;
+    resolvidas = reportsDistrito.filter(r => (r.estado && r.estado.toLowerCase() === "concluída") || (r.estado && r.estado.toLowerCase() === "concluida")).length;
+  }
+
+  recebidasEl.textContent = recebidas;
+  resolvidasEl.textContent = resolvidas;
+
+  // Limpa classes anteriores
+  [cardRecebidas, iconRecebidas].forEach(el => el.classList.remove('text-danger', 'text-warning', 'text-success'));
+  [cardResolvidas, iconResolvidas].forEach(el => el.classList.remove('text-danger', 'text-warning', 'text-success'));
+
+  // Aplica classes de cor baseadas nos valores
+  applyColor(recebidas, cardRecebidas, iconRecebidas);
+  applyColor(resolvidas, cardResolvidas, iconResolvidas);
+}
+
+function applyColor(value, card, icon) {
+  // Força sempre verde para os contadores
+  card.classList.remove('text-danger', 'text-warning', 'text-success');
+  icon.classList.remove('text-danger', 'text-warning', 'text-success');
+  card.classList.add('text-success');
+  icon.classList.add('text-success');
+}
+
+
+// Inicializa valores ao carregar a página
+updateResumoOcorrencias();
+
+
+    function exportChart(chart, filename) {
+      const link = document.createElement('a');
+      link.href = chart.toBase64Image();
+      link.download = `${filename}.png`;
+      link.click();
+    }
+
+    function preencherFiltroTipoOcorrencia() {
+  const reports = JSON.parse(localStorage.getItem('reports')) || [];
+  const tiposSet = new Set();
+  reports.forEach(ocorrencia => {
+    const tipo = ocorrencia.tipo_ocorrencia || ocorrencia.tipo;
+    if (tipo) tiposSet.add(tipo);
+  });
+  const tipos = Array.from(tiposSet);
+  const tipoSelect = document.getElementById('tipoSelect');
+  tipoSelect.innerHTML = '<option value="all">Todos</option>';
+  tipos.forEach(tipo => {
+    const opt = document.createElement('option');
+    opt.value = tipo;
+    opt.textContent = tipo;
+    tipoSelect.appendChild(opt);
+  });
+}
+
+
+// Preencher filtro de tipo de ocorrência ao carregar a página
+document.addEventListener('DOMContentLoaded', preencherFiltroTipoOcorrencia);
+document.getElementById("mesSelect").addEventListener("change", updateOcorrenciasChart);
+document.getElementById("tipoSelect").addEventListener("change", updateOcorrenciasChart);
+function preencherFiltroMaterial() {
+  const reports = JSON.parse(localStorage.getItem('reports')) || [];
+  const materiaisSet = new Set();
+  reports.forEach(auditoria => {
+    if (Array.isArray(auditoria.materiais)) {
+      auditoria.materiais.forEach(mat => {
+        const nome = (typeof mat === 'object' && mat.name) ? mat.name : mat;
+        if (nome) materiaisSet.add(nome);
+      });
+    } else if (typeof auditoria.materiais === 'string') {
+      materiaisSet.add(auditoria.materiais);
+    }
+  });
+  const materiais = Array.from(materiaisSet);
+  const materialSelect = document.getElementById('materialSelect');
+  materialSelect.innerHTML = '<option value="all">Todos</option>';
+  materiais.forEach(mat => {
+    const opt = document.createElement('option');
+    opt.value = mat;
+    opt.textContent = mat;
+    materialSelect.appendChild(opt);
+  });
+}
+
+// Preencher filtro de material ao carregar a página
+document.addEventListener('DOMContentLoaded', preencherFiltroMaterial);
+document.getElementById("mesMaterialSelect").addEventListener("change", updateMaterialChart);
+document.getElementById("materialSelect").addEventListener("change", updateMaterialChart);
+  </script>
+</body>
+</html>
+
+
+
+

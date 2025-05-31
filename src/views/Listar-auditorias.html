@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listar Auditorias</title>
+  <link rel="icon" href="/public/favicon.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+  <style>
+    #detalhesAuditoriaOffcanvas {
+      position: fixed;
+      top: 0;
+      left: calc(250px + (100% - 250px) / 2);
+      width: calc((100% - 250px) / 2);
+      height: 100%;
+      background-color: #fff;
+      z-index: 1050;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+    #detalhesAuditoriaOffcanvas.show {
+      transform: translateX(0%);
+    }
+    #detalhesAuditoriaOffcanvas .offcanvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dee2e6;
+      padding: 1rem;
+    }
+    #detalhesAuditoriaOffcanvas .btn-close {
+      margin-right: auto;
+      margin-left: 0;
+    }
+    #detalhesAuditoriaOffcanvas iframe {
+      flex-grow: 1;
+      border: none;
+      width: 100%;
+    }
+    .btn-ver-detalhes {
+      background-color: #198754 !important;
+      color: #fff !important;
+      border: none;
+    }
+    .btn-ver-detalhes:hover {
+      background-color: #157347 !important;
+      color: #fff !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="registar-perito.html">Registar Perito</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a></li>
+        <li class="nav-item"><a class="nav-link text-success" href="listar-auditorias.html">Listar Auditorias</a></li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h1 class="text-success">Listar Auditorias</h1>
+      <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
+      
+      <!-- Filtros iguais aos de Novas Ocorrências -->
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label for="filtro-distrito" class="form-label">Distrito</label>
+          <select id="filtro-distrito" class="form-select" onchange="atualizarConcelhos();filtrarTabela();">
+            <option value="">Selecione o distrito...</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="filtro-concelho" class="form-label">Concelho</label>
+          <select id="filtro-concelho" class="form-select" onchange="filtrarTabela();" disabled>
+            <option value="">Selecione o concelho...</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="estado" class="form-label">Estado:</label>
+          <select id="estado" class="form-select" onchange="filtrarTabela()">
+            <option value="">Escolha...</option>
+            <option value="Em análise">Em análise</option>
+            <option value="Concluída">Concluída</option>
+            <option value="Pendente">Pendente</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-success">
+          <tr>
+            <th>Localidade</th>
+            <th>Tipo</th>
+            <th>Data</th>
+            <th>Estado</th>
+            <th>Perito</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="auditorias-table">
+          <!-- Auditorias serão inseridas aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Offcanvas para Detalhes -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="detalhesAuditoriaOffcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasLabel">Detalhes da Auditoria</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar" onclick="fecharOffcanvasAuditoria()"></button>
+    </div>
+    <div class="offcanvas-body">
+      <iframe id="iframeDetalhesAuditoria" src="" style="width:100%; height:600px; border:none;"></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Ordem personalizada dos distritos
+    const ordemDistritos = [
+      "Viana do Castelo", "Braga", "Porto", "Vila Real", "Bragança", "Aveiro", "Viseu", "Guarda", "Coimbra", "Castelo Branco", "Leiria", "Santarém", "Lisboa", "Portalegre", "Évora", "Setúbal", "Beja", "Faro"
+    ];
+
+    const distritosConcelhos = {
+      "Viana do Castelo": [
+        "Viana do Castelo", "Arcos de Valdevez", "Caminha", "Melgaço", "Monção", "Paredes de Coura", "Ponte da Barca", "Ponte de Lima", "Valença", "Vila Nova de Cerveira"
+      ],
+      "Braga": [
+        "Braga", "Barcelos", "Guimarães", "Fafe", "Vila Nova de Famalicão"
+      ],
+      "Porto": [
+        "Porto", "Matosinhos", "Vila Nova de Gaia", "Gondomar", "Maia", "Paredes", "Valongo", "Vila do Conde", "Santo Tirso", "Trofa"
+      ],
+      "Vila Real": [
+        "Vila Real", "Alijó", "Boticas", "Chaves", "Mesão Frio", "Mondim de Basto", "Montalegre", "Murça", "Peso da Régua", "Ribeira de Pena", "Sabrosa", "Santa Marta de Penaguião", "Valpaços", "Vila Pouca de Aguiar"
+      ],
+      "Bragança": [
+        "Bragança", "Alfândega da Fé", "Carrazeda de Ansiães", "Freixo de Espada à Cinta", "Macedo de Cavaleiros", "Miranda do Douro", "Mirandela", "Mogadouro", "Torre de Moncorvo", "Vila Flor", "Vimioso", "Vinhais"
+      ],
+      "Aveiro": [
+        "Aveiro", "Águeda", "Anadia", "Espinho", "Ílhavo", "Oliveira de Azeméis", "Ovar", "Santa Maria da Feira", "São João da Madeira"
+      ],
+      "Viseu": [
+        "Viseu", "Lamego", "Mangualde", "Nelas", "Penalva do Castelo", "Sátão", "Tondela"
+      ],
+      "Guarda": [
+        "Guarda", "Almeida", "Celorico da Beira", "Figueira de Castelo Rodrigo", "Gouveia", "Mêda", "Pinhel", "Sabugal", "Seia", "Trancoso"
+      ],
+      "Coimbra": [
+        "Coimbra", "Cantanhede", "Figueira da Foz", "Mealhada", "Montemor-o-Velho", "Penacova", "Soure"
+      ],
+      "Castelo Branco": [
+        "Castelo Branco", "Belmonte", "Covilhã", "Fundão", "Idanha-a-Nova", "Oleiros", "Penamacor", "Proença-a-Nova", "Sertã", "Vila de Rei", "Vila Velha de Ródão"
+      ],
+      "Leiria": [
+        "Leiria", "Alcobaça", "Batalha", "Caldas da Rainha", "Marinha Grande", "Nazaré", "Óbidos", "Peniche", "Pombal"
+      ],
+      "Santarém": [
+        "Santarém", "Abrantes", "Almeirim", "Benavente", "Cartaxo", "Coruche", "Rio Maior", "Tomar", "Torres Novas"
+      ],
+      "Lisboa": [
+        "Alenquer", "Amadora", "Arruda dos Vinhos", "Cadaval", "Cascais", "Lisboa", "Loures", "Lourinhã", "Mafra", "Odivelas", "Oeiras", "Sintra", "Sobral de Monte Agraço", "Torres Vedras"
+      ],
+      "Portalegre": [
+        "Portalegre", "Alter do Chão", "Arronches", "Avis", "Campo Maior", "Castelo de Vide", "Crato", "Elvas", "Fronteira", "Gavião", "Marvão", "Monforte", "Nisa", "Ponte de Sor", "Sousel"
+      ],
+      "Évora": [
+        "Évora", "Arraiolos", "Estremoz", "Montemor-o-Novo", "Reguengos de Monsaraz"
+      ],
+      "Setúbal": [
+        "Setúbal", "Almada", "Barreiro", "Moita", "Montijo", "Palmela", "Seixal", "Sesimbra", "Sines"
+      ],
+      "Beja": [
+        "Beja", "Aljustrel", "Almodôvar", "Castro Verde", "Moura", "Odemira", "Serpa"
+      ],
+      "Faro": [
+        "Faro", "Albufeira", "Loulé", "Olhão", "Portimão", "Tavira"
+      ]
+    };
+
+    function preencherDistritos() {
+      const distritoSelect = document.getElementById('filtro-distrito');
+      distritoSelect.innerHTML = '<option value="">Selecione o distrito...</option>';
+      ordemDistritos.forEach(distrito => {
+        const opt = document.createElement('option');
+        opt.value = distrito;
+        opt.textContent = distrito;
+        distritoSelect.appendChild(opt);
+      });
+    }
+
+    function atualizarConcelhos() {
+      const distrito = document.getElementById('filtro-distrito').value;
+      const concelhoSelect = document.getElementById('filtro-concelho');
+      concelhoSelect.innerHTML = '<option value="">Selecione o concelho...</option>';
+      if (distrito && distritosConcelhos[distrito]) {
+        distritosConcelhos[distrito].forEach(concelho => {
+          const opt = document.createElement('option');
+          opt.value = concelho;
+          opt.textContent = concelho;
+          concelhoSelect.appendChild(opt);
+        });
+        concelhoSelect.disabled = false;
+      } else {
+        concelhoSelect.disabled = true;
+      }
+    }
+
+    function carregarAuditorias() {
+      preencherDistritos();
+      filtrarTabela();
+    }
+
+    function filtrarTabela() {
+      const distrito = document.getElementById('filtro-distrito').value;
+      const concelho = document.getElementById('filtro-concelho').value;
+      const estadoFiltro = document.getElementById("estado").value;
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      const auditorias = reports.filter(r => r.perito && r.perito.trim() !== '');
+      const tabela = document.getElementById('auditorias-table');
+      tabela.innerHTML = '';
+
+      auditorias.forEach((audi, idx) => {
+        const local = (audi.distrito || audi.localidade || '');
+        const estado = (audi.estado || '');
+        const distritoMatch = !distrito || local.toLowerCase().includes(distrito.toLowerCase());
+        const concelhoMatch = !concelho || local.toLowerCase().includes(concelho.toLowerCase());
+        const estadoMatch = !estadoFiltro || estado === estadoFiltro;
+
+        if (distritoMatch && concelhoMatch && estadoMatch) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${local}</td>
+            <td>${audi.tipo_ocorrencia || audi.tipo || ''}</td>
+            <td>${audi.data || ''}</td>
+            <td>${estado}</td>
+            <td>${audi.perito || ''}</td>
+            <td>
+              <button class="btn btn-ver-detalhes btn-sm" onclick="verDetalhesAuditoria(${idx})">Ver detalhes</button>
+            </td>
+          `;
+          tabela.appendChild(tr);
+        }
+      });
+    }
+
+    function verDetalhesAuditoria(idx) {
+      localStorage.setItem('detalheIndex', idx);
+      document.getElementById('iframeDetalhesAuditoria').src = 'ver-detalhes-auditoria.html';
+      document.getElementById('detalhesAuditoriaOffcanvas').classList.add('show');
+    }
+
+    function fecharOffcanvasAuditoria() {
+      document.getElementById('detalhesAuditoriaOffcanvas').classList.remove('show');
+      document.getElementById('iframeDetalhesAuditoria').src = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarAuditorias);
+  </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/public/favicon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Perito</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h1 class="text-success">Editar Perito</h1>
+      <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
+      <form id="form-editar-perito">
+        <div class="mb-3">
+          <label for="nome" class="form-label">Nome do Perito</label>
+          <input type="text" id="nome" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="morada" class="form-label">Morada</label>
+          <input type="text" id="morada" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="telemovel" class="form-label">Nº de Telemóvel</label>
+          <input type="text" id="telemovel" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="data-nascimento" class="form-label">Data de Nascimento</label>
+          <input type="date" id="data-nascimento" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="especialidade" class="form-label">Especialidade</label>
+          <input type="text" id="especialidade" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select id="status" class="form-select">
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="fotografia" class="form-label">Fotografia do Perito</label>
+          <input type="file" id="fotografia" class="form-control" accept="image/*">
+          <img id="foto-preview" src="" alt="Fotografia do Perito" class="mt-3" style="max-width: 200px; display: none;">
+        </div>
+        <button type="submit" class="btn btn-success">Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function carregarPerito() {
+      const index = localStorage.getItem('editarPeritoIndex');
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      const perito = peritos[index];
+
+      if (perito) {
+        document.getElementById('nome').value = perito.nome;
+        document.getElementById('morada').value = perito.morada;
+        document.getElementById('email').value = perito.email;
+        document.getElementById('telemovel').value = perito.telemovel;
+        document.getElementById('data-nascimento').value = perito.dataNascimento;
+        document.getElementById('especialidade').value = perito.especialidade;
+        document.getElementById('status').value = perito.ativo;
+        if (perito.fotografia) {
+          const fotoPreview = document.getElementById('foto-preview');
+          fotoPreview.src = perito.fotografia;
+          fotoPreview.style.display = 'block';
+        }
+      }
+    }
+
+    document.getElementById('form-editar-perito').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const index = localStorage.getItem('editarPeritoIndex');
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+
+      const fotografiaInput = document.getElementById('fotografia');
+      let fotografia = peritos[index].fotografia; // Manter a fotografia existente por padrão
+
+      if (fotografiaInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotografia = e.target.result;
+
+          salvarAlteracoes(index, peritos, fotografia);
+        };
+        reader.readAsDataURL(fotografiaInput.files[0]);
+      } else {
+        salvarAlteracoes(index, peritos, fotografia);
+      }
+    });
+
+    function salvarAlteracoes(index, peritos, fotografia) {
+      peritos[index] = {
+        nome: document.getElementById('nome').value,
+        morada: document.getElementById('morada').value,
+        email: document.getElementById('email').value,
+        telemovel: document.getElementById('telemovel').value,
+        dataNascimento: document.getElementById('data-nascimento').value,
+        especialidade: document.getElementById('especialidade').value,
+        ativo: document.getElementById('status').value === 'true',
+        fotografia: fotografia
+      };
+
+      localStorage.setItem('peritos', JSON.stringify(peritos));
+      alert('Alterações salvas com sucesso!');
+      window.location.href = 'listar-peritos.html';
+    }
+
+    window.onload = carregarPerito;
+  </script>
+</body>
+</html>

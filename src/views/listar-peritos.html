@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/public/favicon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listar Peritos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success" href="listar-peritos.html">Listar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="registar-perito.html">Registar Peritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="novas-ocorrencias.html">Novas Ocorrências</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a>
+        </li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h1 class="text-success">Listar Peritos</h1>
+      <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
+      <table class="table table-bordered table-hover">
+        <thead class="table-success">
+          <tr>
+            <th>Especialista</th>
+            <th>Zona</th>
+            <th>Especialidade</th>
+            <th>Última Ocorrência</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="peritos-table">
+          <!-- Os peritos serão carregados aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function carregarPeritos() {
+      const peritos = JSON.parse(localStorage.getItem('peritos')) || [];
+      renderizarTabela(peritos);
+    }
+
+    function renderizarTabela(lista) {
+      const tabela = document.getElementById('peritos-table');
+      tabela.innerHTML = '';
+
+      lista.forEach((perito, index) => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td>${perito.nome}</td>
+          <td>${perito.morada}</td>
+          <td>${perito.especialidade}</td>
+          <td>${perito.ocorrencia || 'N/A'}</td>
+          <td>${perito.ativo ? 'Ativo' : 'Inativo'}</td>
+          <td>
+            <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Editar</button>
+          </td>
+        `;
+        tabela.appendChild(linha);
+      });
+    }
+
+    function editarPerito(index) {
+      localStorage.setItem('editarPeritoIndex', index);
+      window.location.href = 'editar-perito.html';
+    }
+
+    window.onload = carregarPeritos;
+  </script>
+</body>
+</html>

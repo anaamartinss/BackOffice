@@ -1,0 +1,170 @@
+@use "@coreui/coreui/scss/coreui" as * with (
+  $enable-deprecation-messages: false
+);
+@use "vendors/simplebar";
+
+body {
+  background-color: var(--cui-tertiary-bg);
+}
+
+.wrapper {
+  width: 100%;
+  padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
+  will-change: auto;
+  @include transition(padding .15s);
+}
+
+.header > .container-fluid,
+.sidebar-header {
+  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+}
+
+.sidebar-brand-full {
+  margin-left: 3px;
+}
+
+.sidebar-header {
+  .nav-underline-border {
+    --cui-nav-underline-border-link-padding-x: 1rem;
+    --cui-nav-underline-border-gap: 0;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  }
+}
+
+.sidebar-toggler {
+  margin-inline-start: auto;
+}
+
+.sidebar-narrow,
+.sidebar-narrow-unfoldable:not(:hover) {
+  .sidebar-toggler {
+    margin-inline-end: auto;
+  }
+}
+
+.header > .container-fluid + .container-fluid {
+  min-height: 3rem;
+}
+
+.footer {
+  min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+}
+
+@include color-mode(dark) {
+  body {
+    background-color: var(--cui-dark-bg-subtle);
+  }
+
+  .footer {
+    --cui-footer-bg: var(--cui-body-bg);
+  }
+}
+
+/* Background color for the page */
+body {
+  background-color: #f8f9fa; /* Light gray background */
+}
+
+/* Card shadow and border radius */
+.card {
+  border-radius: 10px;
+  border: none;
+}
+
+/* Custom styles for the title */
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Custom styles for the red text */
+.text-danger {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Input fields */
+.input-group .form-control {
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+/* Buttons */
+.btn-outline-success {
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.btn-success {
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+
+/* Background color for the page */
+body {
+  background-color: #f8f9fa; /* Light gray background */
+}
+
+/* Card shadow and border radius */
+.card {
+  border-radius: 10px;
+  border: none;
+}
+
+/* Table styles */
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.table img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.table-success {
+  background-color: #d4edda;
+}
+
+.btn-outline-success, .btn-outline-danger {
+  border-radius: 5px;
+}
+
+
+/* Barra lateral */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+nav .nav-link {
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+nav .nav-link:hover {
+  background-color: #198754; /* Cor verde */
+  color: white;
+  text-decoration: none;
+}
+
+nav .nav-link.text-success {
+  font-weight: bold;
+  background-color: #198754; /* Cor verde */
+  color: white;
+}
+
+.btn-acao {
+  min-width: 100px;
+  margin: 2px;
+}

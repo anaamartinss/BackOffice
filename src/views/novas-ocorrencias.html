@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <link rel="icon" href="/public/favicon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novas Ocorrências</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+  <style>
+    #detalhesOffcanvas, #associarOffcanvas {
+      position: fixed;
+      top: 0;
+      left: calc(250px + (100% - 250px) / 2);
+      width: calc((100% - 250px) / 2);
+      height: 100%;
+      background-color: #fff;
+      z-index: 1050;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #detalhesOffcanvas.show, #associarOffcanvas.show {
+      transform: translateX(0%);
+    }
+
+    .offcanvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dee2e6;
+      padding: 1rem;
+    }
+
+    .offcanvas .btn-close {
+      margin-right: auto;
+      margin-left: 0;
+    }
+
+    .offcanvas iframe {
+      flex-grow: 1;
+      border: none;
+      width: 100%;
+    }
+
+    .btn-ver-detalhes {
+      background-color: #198754 !important;
+      color: #fff !important;
+      border: none;
+    }
+    .btn-ver-detalhes:hover {
+      background-color: #157347 !important;
+      color: #fff !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+      <h4 class="text-white">EyesEverywhere</h4>
+      <hr class="text-white">
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-peritos.html">Listar Peritos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="registar-perito.html">Registar Perito</a></li>
+        <li class="nav-item"><a class="nav-link text-success active" href="novas-ocorrencias.html">Novas Ocorrências</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="listar-auditorias.html">Listar Auditorias</a></li>
+      </ul>
+      <hr class="text-white">
+      <p class="text-white">EyesEverywhere</p>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h1 class="text-success">Novas Ocorrências</h1>
+      <hr class="text-success" style="height: 2px; width: 50px; margin: 0;">
+
+      <!-- Filtros -->
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label for="filtro-distrito" class="form-label">Distrito</label>
+          <select id="filtro-distrito" class="form-select" onchange="atualizarConcelhos();filtrarOcorrencias();">
+            <option value="">Selecione o distrito...</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="filtro-concelho" class="form-label">Concelho</label>
+          <select id="filtro-concelho" class="form-select" onchange="filtrarOcorrencias();" disabled>
+            <option value="">Selecione o concelho...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow-sm mt-4">
+        <table class="table">
+          <thead class="table-success">
+            <tr>
+              <th>Localidade</th>
+              <th>Tipo</th>
+              <th>Data</th>
+              <th>Estado</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="novas-ocorrencias-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offcanvas Detalhes -->
+  <div id="detalhesOffcanvas" class="offcanvas">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" onclick="fecharOffcanvas()" aria-label="Fechar"></button>
+      <h5 class="offcanvas-title">Detalhes da Ocorrência</h5>
+    </div>
+    <iframe id="iframeDetalhes" src=""></iframe>
+  </div>
+
+  <!-- Offcanvas Associar -->
+  <div id="associarOffcanvas" class="offcanvas">
+    <div class="offcanvas-header">
+      <button type="button" class="btn-close" onclick="fecharOffcanvasAssociar()" aria-label="Fechar"></button>
+      <h5 class="offcanvas-title">Associar Perito</h5>
+    </div>
+    
+    <iframe id="iframeAssociar" src=""></iframe>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Ordem personalizada dos distritos
+    const ordemDistritos = [
+      "Viana do Castelo", "Braga", "Porto", "Vila Real", "Bragança", "Aveiro", "Viseu", "Guarda", "Coimbra", "Castelo Branco", "Leiria", "Santarém", "Lisboa", "Portalegre", "Évora", "Setúbal", "Beja", "Faro"
+    ];
+
+    const distritosConcelhos = {
+      "Viana do Castelo": [
+        "Viana do Castelo", "Arcos de Valdevez", "Caminha", "Melgaço", "Monção", "Paredes de Coura", "Ponte da Barca", "Ponte de Lima", "Valença", "Vila Nova de Cerveira"
+      ],
+      "Braga": [
+        "Braga", "Barcelos", "Guimarães", "Fafe", "Vila Nova de Famalicão"
+      ],
+      "Porto": [
+        "Porto", "Matosinhos", "Vila Nova de Gaia", "Gondomar", "Maia", "Paredes", "Valongo", "Vila do Conde", "Santo Tirso", "Trofa"
+      ],
+      "Vila Real": [
+        "Vila Real", "Alijó", "Boticas", "Chaves", "Mesão Frio", "Mondim de Basto", "Montalegre", "Murça", "Peso da Régua", "Ribeira de Pena", "Sabrosa", "Santa Marta de Penaguião", "Valpaços", "Vila Pouca de Aguiar"
+      ],
+      "Bragança": [
+        "Bragança", "Alfândega da Fé", "Carrazeda de Ansiães", "Freixo de Espada à Cinta", "Macedo de Cavaleiros", "Miranda do Douro", "Mirandela", "Mogadouro", "Torre de Moncorvo", "Vila Flor", "Vimioso", "Vinhais"
+      ],
+      "Aveiro": [
+        "Aveiro", "Águeda", "Anadia", "Espinho", "Ílhavo", "Oliveira de Azeméis", "Ovar", "Santa Maria da Feira", "São João da Madeira"
+      ],
+      "Viseu": [
+        "Viseu", "Lamego", "Mangualde", "Nelas", "Penalva do Castelo", "Sátão", "Tondela"
+      ],
+      "Guarda": [
+        "Guarda", "Almeida", "Celorico da Beira", "Figueira de Castelo Rodrigo", "Gouveia", "Mêda", "Pinhel", "Sabugal", "Seia", "Trancoso"
+      ],
+      "Coimbra": [
+        "Coimbra", "Cantanhede", "Figueira da Foz", "Mealhada", "Montemor-o-Velho", "Penacova", "Soure"
+      ],
+      "Castelo Branco": [
+        "Castelo Branco", "Belmonte", "Covilhã", "Fundão", "Idanha-a-Nova", "Oleiros", "Penamacor", "Proença-a-Nova", "Sertã", "Vila de Rei", "Vila Velha de Ródão"
+      ],
+      "Leiria": [
+        "Leiria", "Alcobaça", "Batalha", "Caldas da Rainha", "Marinha Grande", "Nazaré", "Óbidos", "Peniche", "Pombal"
+      ],
+      "Santarém": [
+        "Santarém", "Abrantes", "Almeirim", "Benavente", "Cartaxo", "Coruche", "Rio Maior", "Tomar", "Torres Novas"
+      ],
+      "Lisboa": [
+        "Alenquer", "Amadora", "Arruda dos Vinhos", "Cadaval", "Cascais", "Lisboa", "Loures", "Lourinhã", "Mafra", "Odivelas", "Oeiras", "Sintra", "Sobral de Monte Agraço", "Torres Vedras"
+      ],
+      "Portalegre": [
+        "Portalegre", "Alter do Chão", "Arronches", "Avis", "Campo Maior", "Castelo de Vide", "Crato", "Elvas", "Fronteira", "Gavião", "Marvão", "Monforte", "Nisa", "Ponte de Sor", "Sousel"
+      ],
+      "Évora": [
+        "Évora", "Arraiolos", "Estremoz", "Montemor-o-Novo", "Reguengos de Monsaraz"
+      ],
+      "Setúbal": [
+        "Setúbal", "Almada", "Barreiro", "Moita", "Montijo", "Palmela", "Seixal", "Sesimbra", "Sines"
+      ],
+      "Beja": [
+        "Beja", "Aljustrel", "Almodôvar", "Castro Verde", "Moura", "Odemira", "Serpa"
+      ],
+      "Faro": [
+        "Faro", "Albufeira", "Loulé", "Olhão", "Portimão", "Tavira"
+      ]
+    };
+
+    // Filtros principais
+    function preencherDistritos() {
+      const distritoSelect = document.getElementById('filtro-distrito');
+      distritoSelect.innerHTML = '<option value="">Selecione o distrito...</option>';
+      ordemDistritos.forEach(distrito => {
+        const opt = document.createElement('option');
+        opt.value = distrito;
+        opt.textContent = distrito;
+        distritoSelect.appendChild(opt);
+      });
+    }
+
+    function atualizarConcelhos() {
+      const distrito = document.getElementById('filtro-distrito').value;
+      const concelhoSelect = document.getElementById('filtro-concelho');
+      concelhoSelect.innerHTML = '<option value="">Selecione o concelho...</option>';
+      if (distrito && distritosConcelhos[distrito]) {
+        distritosConcelhos[distrito].forEach(concelho => {
+          const opt = document.createElement('option');
+          opt.value = concelho;
+          opt.textContent = concelho;
+          concelhoSelect.appendChild(opt);
+        });
+        concelhoSelect.disabled = false;
+      } else {
+        concelhoSelect.disabled = true;
+      }
+    }
+
+    function carregarOcorrencias() {
+      preencherDistritos();
+      filtrarOcorrencias();
+    }
+
+    function filtrarOcorrencias() {
+      const distrito = document.getElementById('filtro-distrito').value;
+      const concelho = document.getElementById('filtro-concelho').value;
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      const filtrados = reports.filter(o => {
+        const local = (o.distrito || o.localidade || '').toLowerCase();
+        const distritoMatch = !distrito || local.includes(distrito.toLowerCase());
+        const concelhoMatch = !concelho || local.includes(concelho.toLowerCase());
+        return distritoMatch && concelhoMatch && !o.perito;
+      });
+      renderizarOcorrencias(filtrados);
+    }
+
+    function renderizarOcorrencias(lista) {
+      const tabela = document.getElementById('novas-ocorrencias-table');
+      tabela.innerHTML = '';
+      lista.forEach((o, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.distrito || o.localidade || ''}</td>
+          <td>${o.tipo_ocorrencia || o.tipo || ''}</td>
+          <td>${o.data || ''}</td>
+          <td>${o.estado || 'Pendente'}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarAssociar(${idx})">Associar</button>
+            <button class="btn btn-sm btn-ver-detalhes btn-acao me-1" onclick="mostrarDetalhes(${idx})">Ver Detalhes</button>
+            <button class="btn btn-sm btn-danger btn-acao" onclick="rejeitarOcorrencia(${idx})">Rejeitar</button>
+          </td>
+        `;
+        tabela.appendChild(tr);
+      });
+    }
+
+    function rejeitarOcorrencia(idx) {
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      reports.splice(idx, 1);
+      localStorage.setItem('reports', JSON.stringify(reports));
+      filtrarOcorrencias();
+    }
+
+    function mostrarDetalhes(idx) {
+      localStorage.setItem('detalheIndex', idx);
+      document.getElementById('iframeDetalhes').src = 'ver-detalhes.html';
+      document.getElementById('detalhesOffcanvas').classList.add('show');
+    }
+
+    function fecharOffcanvas() {
+      document.getElementById('detalhesOffcanvas').classList.remove('show');
+    }
+
+    // Filtros dentro do Offcanvas Associar
+    function preencherDistritosAssociar() {
+      const distritoSelect = document.getElementById('filtro-distrito-associar');
+      distritoSelect.innerHTML = '<option value="">Selecione o distrito...</option>';
+      ordemDistritos.forEach(distrito => {
+        const opt = document.createElement('option');
+        opt.value = distrito;
+        opt.textContent = distrito;
+        distritoSelect.appendChild(opt);
+      });
+    }
+
+    function atualizarConcelhosAssociar() {
+      const distrito = document.getElementById('filtro-distrito-associar').value;
+      const concelhoSelect = document.getElementById('filtro-concelho-associar');
+      concelhoSelect.innerHTML = '<option value="">Selecione o concelho...</option>';
+      if (distrito && distritosConcelhos[distrito]) {
+        distritosConcelhos[distrito].forEach(concelho => {
+          const opt = document.createElement('option');
+          opt.value = concelho;
+          opt.textContent = concelho;
+          concelhoSelect.appendChild(opt);
+        });
+        concelhoSelect.disabled = false;
+      } else {
+        concelhoSelect.disabled = true;
+      }
+    }
+
+    function filtrarPeritosAssociar() {
+      // Implemente aqui o filtro dos peritos conforme a localidade selecionada nos filtros do offcanvas
+      // Exemplo: filtrar a lista de peritos exibida no iframe ou na página associar-peritos.html
+      // Pode comunicar com o iframe usando postMessage se necessário
+    }
+
+    function mostrarAssociar(idx) {
+      localStorage.setItem('ocorrenciaIndex', idx);
+      document.getElementById('iframeAssociar').src = 'associar-peritos.html';
+      document.getElementById('associarOffcanvas').classList.add('show');
+      preencherDistritosAssociar();
+      atualizarConcelhosAssociar();
+    }
+
+    function fecharOffcanvasAssociar() {
+      document.getElementById('associarOffcanvas').classList.remove('show');
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarOcorrencias);
+  </script>
+</body>
+</html>
