@@ -246,11 +246,19 @@
       const tabela = document.getElementById('novas-ocorrencias-table');
       tabela.innerHTML = '';
       lista.forEach((o, idx) => {
+        // Mostra a data de submissão formatada na coluna Data
+        let dataSubmissao = '';
+        if (o.data_submissao) {
+          const data = new Date(o.data_submissao);
+          if (!isNaN(data)) {
+            dataSubmissao = data.toLocaleDateString('pt-PT');
+          }
+        }
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${o.distrito || o.localidade || ''}</td>
           <td>${o.tipo_ocorrencia || o.tipo || ''}</td>
-          <td>${o.data || ''}</td>
+          <td>${dataSubmissao}</td>
           <td>${o.estado || 'Pendente'}</td>
           <td class="text-center">
             <button class="btn btn-sm btn-success btn-acao me-1" onclick="mostrarAssociar(${idx})">Associar</button>

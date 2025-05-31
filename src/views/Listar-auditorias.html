@@ -241,12 +241,21 @@
         const concelhoMatch = !concelho || local.toLowerCase().includes(concelho.toLowerCase());
         const estadoMatch = !estadoFiltro || estado === estadoFiltro;
 
+        // Mostra a data de submissão formatada na coluna Data
+        let dataSubmissao = '';
+        if (audi.data_submissao) {
+          const data = new Date(audi.data_submissao);
+          if (!isNaN(data)) {
+            dataSubmissao = data.toLocaleDateString('pt-PT');
+          }
+        }
+
         if (distritoMatch && concelhoMatch && estadoMatch) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>${local}</td>
             <td>${audi.tipo_ocorrencia || audi.tipo || ''}</td>
-            <td>${audi.data || ''}</td>
+            <td>${dataSubmissao}</td>
             <td>${estado}</td>
             <td>${audi.perito || ''}</td>
             <td>

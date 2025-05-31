@@ -71,13 +71,32 @@
       const tabela = document.getElementById('peritos-table');
       tabela.innerHTML = '';
 
+      // Vai buscar todas as ocorrências do localStorage
+      const ocorrencias = JSON.parse(localStorage.getItem('reports')) || [];
+
       lista.forEach((perito, index) => {
+        // Filtra as ocorrências concluídas deste perito
+        const concluidas = ocorrencias.filter(o =>
+          (o.perito === perito.nome || o.perito === perito.id) &&
+          (o.estado === 'Concluída' || o.estado === 'Concluido' || o.estado === 'Concluida')
+        );
+
+        // Descobre a data mais recente
+        let ultimaData = '';
+        if (concluidas.length > 0) {
+          ultimaData = concluidas
+            .map(o => new Date(o.data_conclusao || o.data || o.data_ocorrencia || o.data_submissao))
+            .filter(d => !isNaN(d))
+            .sort((a, b) => b - a)[0]
+            .toLocaleDateString('pt-PT');
+        }
+
         const linha = document.createElement('tr');
         linha.innerHTML = `
           <td>${perito.nome}</td>
-          <td>${perito.morada}</td>
+          <td>${perito.localidade || ''}</td>
           <td>${perito.especialidade}</td>
-          <td>${perito.ocorrencia || 'N/A'}</td>
+          <td>${ultimaData}</td>
           <td>${perito.ativo ? 'Ativo' : 'Inativo'}</td>
           <td>
             <button class="btn btn-success btn-sm" onclick="editarPerito(${index})">Editar</button>
